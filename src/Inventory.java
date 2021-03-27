@@ -1,5 +1,3 @@
-package edu.ucalgary.ensf409;
-
 /**
  * the Registration program implements an application that edits the INVENTORY database in mySQL
  *
