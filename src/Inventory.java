@@ -71,7 +71,9 @@ class Inventory {
 
     }
 
-
+    public pullData() {
+    	
+    }
 
 
 
