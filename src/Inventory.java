@@ -71,35 +71,11 @@ class Inventory {
 
     }
 
-    class Furniture {
-        int ID;
-        String type;
-        String price;
-        String manufacturerID;
-        boolean usableCondition;
-    }
 
-    class Desk extends Furniture {
-        boolean legs;
-        boolean top;
-        boolean drawer;
-    }
 
-    class Chair extends Furniture {
-        boolean legs;
-        boolean arms;
-        boolean seat;
-        boolean cushion;
-    }
 
-    class Lamp extends Furniture {
-        boolean base;
-        boolean bulb;
-    }
 
-    class Filing extends Furniture {
-        boolean rails;
-        boolean drawer;
-        boolean cabinet;
-    }
+
+
+
 }
