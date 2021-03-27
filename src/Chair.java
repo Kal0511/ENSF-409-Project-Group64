@@ -7,22 +7,13 @@ public class Chair extends Furniture {
         boolean arms;
         boolean seat;
         boolean cushion;
-        LinkedList <String[]> result;
+        ;
         
         public Chair() {
-        	 result = new LinkedList<String[]>();
         }
         
-        public String checkRequest(ResultSet resultSet) throws SQLException {
-        	while (resultSet.next()){
-        		String[] arr = {resultSet.getString("ID"),resultSet.getString("Type"),
-        				resultSet.getString("Legs"),resultSet.getString("Arms"),resultSet.getString("Seat"),
-        				resultSet.getString("Cushion"),resultSet.getString("Price"),resultSet.getString("ManuID")};
-        		result.add(arr);
-        		System.out.println(arr[0]);
+        public String checkRequest(LinkedList <String[]> result)  {
 
-        		System.out.println("asds");
-            }
-        	return "";
+        return "";
         }
     }
