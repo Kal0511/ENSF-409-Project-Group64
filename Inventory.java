@@ -1,7 +1,7 @@
 package edu.ucalgary.ensf409;
 
 /**
- * the Registration program implements an application that edits the COMPETITION database in mySQL
+ * the Registration program implements an application that edits the INVENTORY database in mySQL
  *
  * @author Adam Abouelhassan
  * @version 1.1
