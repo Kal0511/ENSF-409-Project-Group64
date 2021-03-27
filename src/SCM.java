@@ -5,5 +5,6 @@ public class SCM {
         Inventory test = new Inventory();
         test.initializeConnection();
         test.getUserRequest();
+        test.pullData();
     }
 }
