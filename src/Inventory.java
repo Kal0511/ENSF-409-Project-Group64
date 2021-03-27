@@ -105,9 +105,10 @@ public class Inventory {
 
     public void pullData() {
         try {
-            Statement myStmt = dbConnect.createStatement();
-            results = myStmt.executeQuery("SELECT * FROM "+category+" WHERE type = "+type);
-
+            String query = "SELECT * FROM Chair WHERE Type = ?";
+            PreparedStatement myStmt = dbConnect.prepareStatement(query);
+            myStmt.setString(1, type);
+            results = myStmt.executeQuery();
             while (results.next()){
                 System.out.println("Print results: " + results.getString("id"));
             }
@@ -116,4 +117,15 @@ public class Inventory {
             ex.printStackTrace();
         }
     }
+   public String evaluvateRequest() {
+	   if(category.equals("Chair")) {
+		   return 
+	   }else if(category.equals("Desk")) {
+		   
+	   }else if(category.equals("Filing")) {
+		   
+	   }else{
+		   
+	   }
+   }
 }

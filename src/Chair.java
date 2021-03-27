@@ -6,7 +6,7 @@ public class Chair extends Furniture {
         boolean seat;
         boolean cushion;
         
-        public void checkRequest(ResultSet results) {
+        public static String checkRequest(ResultSet results) {
         	while (results.next()){
            
                 
