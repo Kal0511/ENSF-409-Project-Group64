@@ -11,8 +11,8 @@ import java.io.*;
 
 class Inventory {
     public final String DBURL = "jdbc:mysql://localhost/inventory";       // store the database url information
-    public final String USERNAME = "adam";         // store the user's account username
-    public final String PASSWORD = "ensf409";       // store the user's account password
+    public final String USERNAME = "root";         // store the user's account username
+    public final String PASSWORD = "kaumil";       // store the user's account password
 
     private Connection dbConnect;
     private ResultSet results;
@@ -68,11 +68,21 @@ class Inventory {
     }
 
     public void AnalyzeEntry(String entry) {
-
+    	
     }
 
-    public pullData() {
-    	
+    public void pullData() {
+        try {                    
+            Statement myStmt = dbConnect.createStatement();
+            results = myStmt.executeQuery("SELECT * FROM "+category+" WHERE type = "+type);
+            
+            while (results.next()){
+                System.out.println("Print results: " + results.getString("id"));
+            }
+            myStmt.close();
+        } catch (SQLException ex) {
+            ex.printStackTrace();
+        }
     }
 
 

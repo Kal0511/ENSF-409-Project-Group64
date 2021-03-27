@@ -1,3 +1,7 @@
+import java.io.BufferedReader;
+import java.io.IOException;
+import java.io.InputStreamReader;
+
 public class SCM {
     public static void main(String[] args) {
         Inventory test = new Inventory();
@@ -13,8 +17,8 @@ public class SCM {
             e.printStackTrace();
         }
         test.AnalyzeEntry(entry);
-        System.out.println("Category: " + test.category);
-        System.out.println("Type: " + test.type);
-        System.out.println("Amount: " + test.amount);
+//        System.out.println("Category: " + test.category);
+//        System.out.println("Type: " + test.type);
+//        System.out.println("Amount: " + test.amount);
     }
 }
