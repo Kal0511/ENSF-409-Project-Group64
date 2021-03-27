@@ -1,32 +1,20 @@
-/**
- * the Registration program implements an application that edits the INVENTORY database in mySQL
- *
- * @author Adam Abouelhassan
- * @version 1.1
- * @since 1.0
- */
-
 import java.sql.*;
 import java.io.*;
 
-class Inventory {
+public class Inventory {
     public final String DBURL = "jdbc:mysql://localhost/inventory";       // store the database url information
-    public final String USERNAME = "root";         // store the user's account username
-    public final String PASSWORD = "kaumil";       // store the user's account password
+    public final String USERNAME = "adam";         // store the user's account username
+    public final String PASSWORD = "ensf409";       // store the user's account password
 
     private Connection dbConnect;
     private ResultSet results;
 
-    private String category;
-    private String type;
-    private int amount;
+    public String category;
+    public String type;
+    public int amount;
 
-    public static void main(String[] args) {
-        Inventory test = new Inventory();
-        test.initializeConnection();
-
-        BufferedReader reader = new BufferedReader(         // for reading input
-                new InputStreamReader(System.in));
+    public void getUserRequest() {
+        BufferedReader reader = new BufferedReader(new InputStreamReader(System.in));       // for reading input
         String entry = null;
         try {
             System.out.print("User request:");
@@ -34,7 +22,10 @@ class Inventory {
         } catch (IOException e) {
             e.printStackTrace();
         }
-        test.AnalyzeEntry(entry);
+        this.AnalyzeEntry(entry);
+        System.out.println("Category: " + this.category);
+        System.out.println("Type: " + this.type);
+        System.out.println("Amount: " + this.amount);
     }
 
     public Inventory() {
@@ -67,15 +58,56 @@ class Inventory {
         }
     }
 
+    // Dissects input from user into required variables
     public void AnalyzeEntry(String entry) {
-    	
+        try {
+            String tmp = null;
+            if (entry.toLowerCase().contains("chair")) {
+                this.category = "Chair";
+                tmp = entry.toLowerCase().split(" chair")[0];
+                this.type = toTitleCase(tmp);
+            } else if (entry.toLowerCase().contains("desk")) {
+                this.category = "Desk";
+                tmp = entry.toLowerCase().split(" desk")[0];
+                this.type = toTitleCase(tmp);
+            } else if (entry.toLowerCase().contains("lamp")) {
+                this.category = "Lamp";
+                tmp = entry.toLowerCase().split(" lamp")[0];
+                this.type = toTitleCase(tmp);
+            } else if (entry.toLowerCase().contains("filing")) {
+                this.category = "Filing";
+                tmp = entry.toLowerCase().split(" filing")[0];
+                this.type = toTitleCase(tmp);
+            }
+            tmp = entry.split(", ")[1];
+            this.amount = Integer.parseInt(tmp);
+        } catch (Exception e) {
+            System.out.println("Invalid entry.");
+        }
+    }
+
+    // convert to title case
+    public String toTitleCase(String x) {
+        StringBuilder titleCase = new StringBuilder(x.length());
+        boolean nextTitleCase = true;
+
+        for (char c : x.toCharArray()) {
+            if (Character.isSpaceChar(c)) {
+                nextTitleCase = true;
+            } else if (nextTitleCase) {
+                c = Character.toTitleCase(c);
+                nextTitleCase = false;
+            }
+            titleCase.append(c);
+        }
+        return titleCase.toString();
     }
 
     public void pullData() {
-        try {                    
+        try {
             Statement myStmt = dbConnect.createStatement();
             results = myStmt.executeQuery("SELECT * FROM "+category+" WHERE type = "+type);
-            
+
             while (results.next()){
                 System.out.println("Print results: " + results.getString("id"));
             }
@@ -84,10 +116,4 @@ class Inventory {
             ex.printStackTrace();
         }
     }
-
-
-
-
-
-
 }
