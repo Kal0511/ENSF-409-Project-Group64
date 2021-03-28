@@ -5,8 +5,8 @@ import java.util.*;
 
 public class Inventory {
     public final String DBURL = "jdbc:mysql://localhost/inventory";       // store the database url information
-    public final String USERNAME = "adam";         // store the user's account username
-    public final String PASSWORD = "ensf409";       // store the user's account password
+    public final String USERNAME = "khaled";         // store the user's account username
+    public final String PASSWORD = "5446223";       // store the user's account password
 
     private Connection dbConnect;
     private ResultSet results;
@@ -226,6 +226,7 @@ public class Inventory {
                 myStmt = dbConnect.prepareStatement(query);
 //                System.out.println(items.split(" ")[i]);
                 myStmt.setString(1, items.split(" ")[i]);
+                myStmt.execute();
             }
             myStmt.close();
         } catch (SQLException ex) {
