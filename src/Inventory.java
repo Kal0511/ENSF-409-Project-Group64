@@ -5,8 +5,8 @@ import java.util.*;
 
 public class Inventory {
     public final String DBURL = "jdbc:mysql://localhost/inventory";       // store the database url information
-    public final String USERNAME = "khaled";         // store the user's account username
-    public final String PASSWORD = "5446223";       // store the user's account password
+    public final String USERNAME = "adam";         // store the user's account username
+    public final String PASSWORD = "ensf409";       // store the user's account password
 
     private Connection dbConnect;
     private ResultSet results;
@@ -14,24 +14,27 @@ public class Inventory {
     public String category;
     public String type;
     public int amount;
-    
-//    Set<String[]> resultList = new HashSet<String[]>();
+
+    String entry = null;
+    String items = null;
+    int itemPrice = 0;
+
+    //    Set<String[]> resultList = new HashSet<String[]>();
     LinkedList<String[]> resultList = new LinkedList<String[]>();
 
 
     public void getUserRequest() {
         BufferedReader reader = new BufferedReader(new InputStreamReader(System.in));       // for reading input
-        String entry = null;
         try {
-            System.out.print("User request:");
+            System.out.print("User request: ");
             entry = reader.readLine();                     // read input line
         } catch (IOException e) {
             e.printStackTrace();
         }
         this.AnalyzeEntry(entry);
-        System.out.println("Category: " + this.category);
-        System.out.println("Type: " + this.type);
-        System.out.println("Amount: " + this.amount);
+        //System.out.println("Category: " + this.category);
+        //System.out.println("Type: " + this.type);
+        //System.out.println("Amount: " + this.amount);
     }
 
     public Inventory() {
@@ -109,9 +112,18 @@ public class Inventory {
         return titleCase.toString();
     }
 
+    // reads from from required table in mysql database INVENTORY
     public void pullData() {
+        String query = null;
         try {
-            String query = "SELECT * FROM Chair WHERE Type = ?";
+            if (category.equals("Chair"))
+                query = "SELECT * FROM Chair WHERE Type = ?";
+            else if (category.equals("Desk"))
+                query = "SELECT * FROM Desk WHERE Type = ?";
+            else if (category.equals("Lamp"))
+                query = "SELECT * FROM Lamp WHERE Type = ?";
+            else if (category.equals("Filing"))
+                query = "SELECT * FROM Filing WHERE Type = ?";
             PreparedStatement myStmt = dbConnect.prepareStatement(query);
             myStmt.setString(1, type);
             results = myStmt.executeQuery();
@@ -123,28 +135,132 @@ public class Inventory {
             ex.printStackTrace();
         }
     }
-      public Set<String[]> evaluvateRequest() throws SQLException {
+
+    // retrives all items matching user request, calls other methods to calculate cheapest option
+    public void evaluvateRequest() throws SQLException {
         int i = 0;
         if (category.equals("Chair")) {
-            
+
             while (results.next()) {
                 String[] arr = {results.getString("ID"), results.getString("Type"),
                         results.getString("Legs"), results.getString("Arms"), results.getString("Seat"),
                         results.getString("Cushion"), results.getString("Price"), results.getString("ManuID")};
-                    resultList.add(arr);
+                resultList.add(arr);
                 i++;
             }
-            Chair chair = new Chair(resultList);
+            Chair chair = new Chair();
             chair.checkRequest(resultList);
             chair.checkPrices();
-            return null;
-        } //else if (category.equals("Desk")) {
+            //System.out.println("Minimum price per Chair: " + chair.minPrice);
+            this.itemPrice = chair.minPrice;
+            //System.out.println("Result: " + chair.result);
+            this.items = chair.result;
 
-//        } else if (category.equals("Filing")) {
+        } else if (category.equals("Desk")) {
 
-//        } else if (category.equals("Lamp")) {
+            while (results.next()) {
+                String[] arr = {results.getString("ID"), results.getString("Type"),
+                        results.getString("Legs"), results.getString("Top"), results.getString("Drawer"),
+                        results.getString("Price"), results.getString("ManuID")};
+                resultList.add(arr);
+                i++;
+            }
+            Desk desk = new Desk();
+            desk.checkRequest(resultList);
+            desk.checkPrices();
+            //System.out.println("Minimum price per Desk: " + desk.minPrice);
+            this.itemPrice = desk.minPrice;
+            //System.out.println("Result: " + desk.result);
+            this.items = desk.result;
 
-//        } 
-        return null;
+        } else if (category.equals("Filing")) {
+
+            while (results.next()) {
+                String[] arr = {results.getString("ID"), results.getString("Type"),
+                        results.getString("Rails"), results.getString("Drawers"), results.getString("Cabinet"),
+                        results.getString("Price"), results.getString("ManuID")};
+                resultList.add(arr);
+                i++;
+            }
+            Filing filing = new Filing();
+            filing.checkRequest(resultList);
+            filing.checkPrices();
+            //System.out.println("Minimum price per Filing: " + filing.minPrice);
+            this.itemPrice = filing.minPrice;
+            //System.out.println("Result: " + filing.result);
+            this.items = filing.result;
+
+        } else if (category.equals("Lamp")) {
+
+            while (results.next()) {
+                String[] arr = {results.getString("ID"), results.getString("Type"),
+                        results.getString("Base"), results.getString("Bulb"),
+                        results.getString("Price"), results.getString("ManuID")};
+                resultList.add(arr);
+                i++;
+            }
+            Lamp lamp = new Lamp();
+            lamp.checkRequest(resultList);
+            lamp.checkPrices();
+            //System.out.println("Minimum price per lamp: " + lamp.minPrice);
+            this.itemPrice = lamp.minPrice;
+            //System.out.println("Result: " + lamp.result);
+            this.items = lamp.result;
+        }
+        results.close();
+    }
+
+    // updates database by deleting items being bought
+    public void updateDatabase() {
+        String query = null;
+        PreparedStatement myStmt = null;
+        try {
+//            System.out.println(items.charAt(0));
+            if (items.charAt(0) == 'C')
+                query = "DELETE FROM chair WHERE ID = ?";
+            else if (items.charAt(0) == 'D')
+                query = "DELETE FROM desk WHERE ID = ?";
+            else if (items.charAt(0) == 'L')
+                query = "DELETE FROM lamp WHERE ID = ?";
+            else if (items.charAt(0) == 'F')
+                query = "DELETE FROM filing WHERE ID = ?";
+
+            for (int i = 0; i < items.split(" ").length; i++) {
+                myStmt = dbConnect.prepareStatement(query);
+//                System.out.println(items.split(" ")[i]);
+                myStmt.setString(1, items.split(" ")[i]);
+            }
+            myStmt.close();
+        } catch (SQLException ex) {
+            ex.printStackTrace();
+        }
+    }
+
+
+    // write to file called orderForm.txt
+    public void write() {
+        System.out.print("Output: Purchase ");
+        for (int i = 0; i < items.split(" ").length; i++) {
+            System.out.print(items.split(" ")[i]);
+            if (i != items.split(" ").length - 1)
+                System.out.print(" and ");
+        }
+        System.out.print(" for $" + itemPrice + "\n");
+        try {
+            FileWriter fileWriter = new FileWriter("orderForm.txt");
+            PrintWriter fo = new PrintWriter(fileWriter);
+            fo.write("Furniture Order Form \n \n");
+            fo.write("Faculty Name:\n");
+            fo.write("Contact:\n");
+            fo.write("Date:\n");
+            fo.write("\nOriginal Request: " + entry + "\n");
+            fo.write("\nItmes Ordered:\n");
+            for (int i = 0; i < items.split(" ").length; i++)
+                fo.write("ID: " + items.split(" ")[i] + "\n");
+            fo.write("\nTotal Price: $" + amount * itemPrice);
+            fo.close();
+        } catch (Exception e) {
+            System.out.println(e);
+        }
     }
 }
