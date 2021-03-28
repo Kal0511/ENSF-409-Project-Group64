@@ -257,7 +257,7 @@ public class Inventory {
             fo.write("\nItmes Ordered:\n");
             for (int i = 0; i < items.split(" ").length; i++)
                 fo.write("ID: " + items.split(" ")[i] + "\n");
-            fo.write("\nTotal Price: $" + amount * itemPrice);
+            fo.write("\nTotal Price: $" +  itemPrice);
             fo.close();
         } catch (Exception e) {
             System.out.println(e);
