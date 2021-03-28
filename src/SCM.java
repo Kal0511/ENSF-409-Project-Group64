@@ -8,5 +8,7 @@ public class SCM {
         test.getUserRequest();
         test.pullData();
         test.evaluvateRequest();
+        test.updateDatabase();
+        test.write();
     }
 }
