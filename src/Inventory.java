@@ -38,9 +38,6 @@ public class Inventory {
     }
 
     public Inventory() {
-        String DBURL = "jdbc:mysql://localhost/inventory";
-        String USERNAME = "adam";
-        String PASSWORD = "ensf409";
     }
 
     // getter
