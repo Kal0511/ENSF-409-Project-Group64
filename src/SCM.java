@@ -1,3 +1,7 @@
+/*
+ * SCM is a the main class where the supply chain management
+ * system is run from.
+ */
 import java.io.*;
 import java.sql.SQLException;
 
