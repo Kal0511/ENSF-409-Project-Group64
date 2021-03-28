@@ -15,7 +15,8 @@ public class Inventory {
     public String type;
     public int amount;
     
-    Set<String[]> resultList = new HashSet<String[]>();
+//    Set<String[]> resultList = new HashSet<String[]>();
+    LinkedList<String[]> resultList = new LinkedList<String[]>();
 
 
     public void getUserRequest() {
@@ -125,7 +126,7 @@ public class Inventory {
       public Set<String[]> evaluvateRequest() throws SQLException {
         int i = 0;
         if (category.equals("Chair")) {
-            Chair chair = new Chair();
+            
             while (results.next()) {
                 String[] arr = {results.getString("ID"), results.getString("Type"),
                         results.getString("Legs"), results.getString("Arms"), results.getString("Seat"),
@@ -133,8 +134,9 @@ public class Inventory {
                     resultList.add(arr);
                 i++;
             }
-            for (String[] x : resultList)
-                System.out.println("ID: " + x[0]);
+            Chair chair = new Chair(resultList);
+            chair.checkRequest(resultList);
+            chair.checkPrices();
             return null;
         } //else if (category.equals("Desk")) {
 
@@ -142,7 +144,7 @@ public class Inventory {
 
 //        } else if (category.equals("Lamp")) {
 
-//        }
+//        } 
         return null;
     }
 }
