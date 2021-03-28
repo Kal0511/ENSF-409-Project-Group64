@@ -1,6 +1,7 @@
 import java.sql.*;
 import java.util.LinkedList;
 import java.io.*;
+import java.util.*;
 
 public class Inventory {
     public final String DBURL = "jdbc:mysql://localhost/inventory";       // store the database url information
