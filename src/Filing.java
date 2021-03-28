@@ -1,4 +1,4 @@
-  import java.sql.ResultSet;
+import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.*;
 
@@ -7,16 +7,25 @@ public class Filing extends Furniture {
     boolean drawers = false;
     boolean cabinet = false;
     boolean check = false;
+    int numOfRails = 0;
+    int numOfDrawers = 0;
+    int numOfCabinet = 0;
     int minPrice = 9999999;
     int price = 0;
+    int amount;
     String result = "";
     StringBuffer itemIDs = new StringBuffer("");
     LinkedList<Integer> prices = new LinkedList<Integer>();
     LinkedList<String> IDs = new LinkedList<String>();
 
+    public Filing(int amount) {
+        this.amount = amount;
+    }
+
     public void checkRequest(LinkedList<String[]> results) {
 
-        if (rails && drawers && cabinet) {
+        if (rails && drawers && cabinet && numOfRails >= amount && numOfDrawers >= amount && numOfCabinet >= amount) {
+
             this.prices.add(price);
             this.IDs.add(itemIDs.toString());
 //    		System.out.println("combination found: "+itemIDs.toString());
@@ -33,15 +42,22 @@ public class Filing extends Furniture {
             boolean railsBefore = rails;
             boolean drawersBefore = drawers;
             boolean cabinetBefore = cabinet;
+            int numOfRailsBefore = numOfRails;
+            int numOfDrawersBefore = numOfDrawers;
+            int numOfCabinetBefore = numOfCabinet;
+
 
             if (arr[2].equals("Y")) {
                 this.rails = true;
+                numOfRails++;
             }
             if (arr[3].equals("Y")) {
                 this.drawers = true;
+                numOfDrawers++;
             }
             if (arr[4].equals("Y")) {
                 this.cabinet = true;
+                numOfCabinet++;
             }
 
             LinkedList<String[]> resultsRecursion = new LinkedList<String[]>();
@@ -58,6 +74,9 @@ public class Filing extends Furniture {
             rails = railsBefore;
             drawers = drawersBefore;
             cabinet = cabinetBefore;
+            numOfRails = numOfRailsBefore;
+            numOfDrawers = numOfDrawersBefore;
+            numOfCabinet = numOfCabinetBefore;
             price -= Integer.parseInt(results.get(i)[5]);
             itemIDs.delete(itemIDs.length() - results.get(i)[0].length() - 1, itemIDs.length());
         }
@@ -72,6 +91,9 @@ public class Filing extends Furniture {
                 tmp = i;
             }
         }
-        result += IDs.get(tmp).substring(1);
+        if (!IDs.isEmpty()) {
+            result += IDs.get(tmp).substring(1);
+        }
+
     }
 }
