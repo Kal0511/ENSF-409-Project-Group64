@@ -6,9 +6,9 @@ public class SCM {
         Inventory test = new Inventory();
         test.initializeConnection();
         test.getUserRequest();
-        test.pullData();
-        test.evaluvateRequest();
-        test.updateDatabase();
-        test.write();
+       	test.pullData();
+       	test.evaluvateRequest();
+       	test.updateDatabase();
+       	test.write();
     }
 }

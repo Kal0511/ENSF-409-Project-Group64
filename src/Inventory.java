@@ -22,7 +22,9 @@ public class Inventory {
     //    Set<String[]> resultList = new HashSet<String[]>();
     LinkedList<String[]> resultList = new LinkedList<String[]>();
 
-
+    public int getAmount() {
+    	return this.amount;
+    }
     public void getUserRequest() {
         BufferedReader reader = new BufferedReader(new InputStreamReader(System.in));       // for reading input
         try {
@@ -145,7 +147,7 @@ public class Inventory {
                 resultList.add(arr);
                 i++;
             }
-            Chair chair = new Chair();
+            Chair chair = new Chair(this.amount);
             chair.checkRequest(resultList);
             chair.checkPrices();
             //System.out.println("Minimum price per Chair: " + chair.minPrice);
