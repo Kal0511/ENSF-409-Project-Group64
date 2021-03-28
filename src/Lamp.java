@@ -3,19 +3,27 @@ import java.sql.SQLException;
 import java.util.*;
 
 public class Lamp extends Furniture {
-    boolean base;
-    boolean bulb;
+    boolean base = false;
+    boolean bulb = false;
     boolean check = false;
+    int numOfBase = 0;
+    int numOfBulb = 0;
     int minPrice = 9999999;
     int price = 0;
+    int amount;
     String result = "";
     StringBuffer itemIDs = new StringBuffer("");
     LinkedList<Integer> prices = new LinkedList<Integer>();
     LinkedList<String> IDs = new LinkedList<String>();
 
+    public Lamp(int amount) {
+        this.amount = amount;
+    }
+
     public void checkRequest(LinkedList<String[]> results) {
 
-        if (base && bulb) {
+        if (base && bulb && numOfBase >= amount && numOfBulb >= amount) {
+
             this.prices.add(price);
             this.IDs.add(itemIDs.toString());
 //    		System.out.println("combination found: "+itemIDs.toString());
@@ -31,12 +39,17 @@ public class Lamp extends Furniture {
 
             boolean baseBefore = base;
             boolean bulbBefore = bulb;
+            int numOfBaseBefore = numOfBase;
+            int numOfBulbBefore = numOfBulb;
+
 
             if (arr[2].equals("Y")) {
                 this.base = true;
+                numOfBase++;
             }
             if (arr[3].equals("Y")) {
                 this.bulb = true;
+                numOfBulb++;
             }
 
             LinkedList<String[]> resultsRecursion = new LinkedList<String[]>();
@@ -52,6 +65,8 @@ public class Lamp extends Furniture {
 
             base = baseBefore;
             bulb = bulbBefore;
+            numOfBase = numOfBaseBefore;
+            numOfBulb = numOfBulbBefore;
             price -= Integer.parseInt(results.get(i)[4]);
             itemIDs.delete(itemIDs.length() - results.get(i)[0].length() - 1, itemIDs.length());
         }
@@ -66,6 +81,9 @@ public class Lamp extends Furniture {
                 tmp = i;
             }
         }
-        result += IDs.get(tmp).substring(1);
+        if (!IDs.isEmpty()) {
+            result += IDs.get(tmp).substring(1);
+        }
+
     }
 }
