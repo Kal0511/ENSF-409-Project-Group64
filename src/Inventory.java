@@ -5,8 +5,8 @@ import java.util.*;
 
 public class Inventory {
     public final String DBURL = "jdbc:mysql://localhost/inventory";       // store the database url information
-    public final String USERNAME = "khaled";         // store the user's account username
-    public final String PASSWORD = "5446223";       // store the user's account password
+    public final String USERNAME = "adam";         // store the user's account username
+    public final String PASSWORD = "ensf409";       // store the user's account password
 
     private Connection dbConnect;
     private ResultSet results;
@@ -14,6 +14,7 @@ public class Inventory {
     public String category;
     public String type;
     public int amount;
+    public String[] possibleManufacturersID;
 
     String entry = null;
     String items = null;
@@ -23,8 +24,9 @@ public class Inventory {
     LinkedList<String[]> resultList = new LinkedList<String[]>();
 
     public int getAmount() {
-    	return this.amount;
+        return this.amount;
     }
+
     public void getUserRequest() {
         BufferedReader reader = new BufferedReader(new InputStreamReader(System.in));       // for reading input
         try {
@@ -91,6 +93,7 @@ public class Inventory {
             this.amount = Integer.parseInt(tmp);
         } catch (Exception e) {
             System.out.println("Invalid entry.");
+            System.exit(1);
         }
     }
 
@@ -147,6 +150,16 @@ public class Inventory {
                 resultList.add(arr);
                 i++;
             }
+            possibleManufacturersID = new String[resultList.size()];
+            int j = 0;
+            String tmp = "";
+            for (String[] x : resultList) {
+                if (j < possibleManufacturersID.length && !tmp.contains(x[7]))
+                    possibleManufacturersID[j] = x[7];
+                j++;
+                tmp += x[7] + " ";
+            }
+            findManufacturers();
             Chair chair = new Chair(this.amount);
             chair.checkRequest(resultList);
             chair.checkPrices();
@@ -164,7 +177,16 @@ public class Inventory {
                 resultList.add(arr);
                 i++;
             }
-            Desk desk = new Desk();
+            possibleManufacturersID = new String[resultList.size()];
+            int j = 0;
+            String tmp = "";
+            for (String[] x : resultList) {
+                if (j < possibleManufacturersID.length && !tmp.contains(x[6]))
+                    possibleManufacturersID[j] = x[6];
+                j++;
+                tmp += x[6] + " ";
+            }
+            Desk desk = new Desk(amount);
             desk.checkRequest(resultList);
             desk.checkPrices();
             //System.out.println("Minimum price per Desk: " + desk.minPrice);
@@ -181,7 +203,16 @@ public class Inventory {
                 resultList.add(arr);
                 i++;
             }
-            Filing filing = new Filing();
+            possibleManufacturersID = new String[resultList.size()];
+            int j = 0;
+            String tmp = "";
+            for (String[] x : resultList) {
+                if (j < possibleManufacturersID.length && !tmp.contains(x[6]))
+                    possibleManufacturersID[j] = x[6];
+                j++;
+                tmp += x[6] + " ";
+            }
+            Filing filing = new Filing(amount);
             filing.checkRequest(resultList);
             filing.checkPrices();
             //System.out.println("Minimum price per Filing: " + filing.minPrice);
@@ -198,7 +229,17 @@ public class Inventory {
                 resultList.add(arr);
                 i++;
             }
-            Lamp lamp = new Lamp();
+            possibleManufacturersID = new String[resultList.size()];
+            int j = 0;
+            String tmp = "";
+            for (String[] x : resultList) {
+                if (j < possibleManufacturersID.length && !tmp.contains(x[5]))
+                    possibleManufacturersID[j] = x[5];
+                j++;
+                tmp += x[5] + " ";
+            }
+            findManufacturers();
+            Lamp lamp = new Lamp(amount);
             lamp.checkRequest(resultList);
             lamp.checkPrices();
             //System.out.println("Minimum price per lamp: " + lamp.minPrice);
@@ -207,6 +248,10 @@ public class Inventory {
             this.items = lamp.result;
         }
         results.close();
+    }
+
+    // find manufacturer names from database, replace possibleManufacturersID with actual names
+    public void findManufacturers() {
     }
 
     // updates database by deleting items being bought
@@ -257,7 +302,7 @@ public class Inventory {
             fo.write("\nItmes Ordered:\n");
             for (int i = 0; i < items.split(" ").length; i++)
                 fo.write("ID: " + items.split(" ")[i] + "\n");
-            fo.write("\nTotal Price: $" +  itemPrice);
+            fo.write("\nTotal Price: $" + itemPrice);
             fo.close();
         } catch (Exception e) {
             System.out.println(e);
