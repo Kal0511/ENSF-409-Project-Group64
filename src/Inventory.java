@@ -14,7 +14,7 @@ public class Inventory {
     public String type;
     public int amount;
     
-    LinkedList <String[]> resultList = new LinkedList<String[]>();
+    Set<String[]> resultList = new HashSet<String[]>();
 
 
     public void getUserRequest() {
@@ -121,26 +121,27 @@ public class Inventory {
             ex.printStackTrace();
         }
     }
-   public String evaluvateRequest() throws SQLException {
-	   if(category.equals("Chair")) {
-		  Chair chair = new Chair();
-   			while(results.next()) {
-   					String[] arr = {results.getString("ID"),results.getString("Type"),
-   							results.getString("Legs"),results.getString("Arms"),results.getString("Seat"),
-   							results.getString("Cushion"),results.getString("Price"),results.getString("ManuID")};
-   					
-   					resultList.add(arr);
-   					System.out.println(resultList.get(0)[1]);
-   		}
-	   }
-//		   return chair.checkRequest(this.results); 
-//	   }else if(category.equals("Desk")) {
-//		   
-//	   }else if(category.equals("Filing")) {
-//		   
-//	   }else{
-//		   
-//	   }
-	return "";
-   }
+      public Set<String[]> evaluvateRequest() throws SQLException {
+        int i = 0;
+        if (category.equals("Chair")) {
+            Chair chair = new Chair();
+            while (results.next()) {
+                String[] arr = {results.getString("ID"), results.getString("Type"),
+                        results.getString("Legs"), results.getString("Arms"), results.getString("Seat"),
+                        results.getString("Cushion"), results.getString("Price"), results.getString("ManuID")};
+                    resultList.add(arr);
+                i++;
+            }
+            for (String[] x : resultList)
+                System.out.println("ID: " + x[0]);
+            return null;
+        } //else if (category.equals("Desk")) {
+
+//        } else if (category.equals("Filing")) {
+
+//        } else if (category.equals("Lamp")) {
+
+//        }
+        return null;
+    }
 }
