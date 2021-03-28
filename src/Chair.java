@@ -21,11 +21,13 @@ public class Chair extends Furniture {
     LinkedList<String> IDs = new LinkedList<String>();
 
     public Chair(int amount) {
-    	this.amount = amount;
+        this.amount = amount;
     }
+
     public void checkRequest(LinkedList<String[]> results) {
 
-        if (legs && arms && seat && cushion && numOfLegs>=amount && numOfArms>=amount && numOfSeats>=amount && numOfCushions>=amount) {
+        if (legs && arms && seat && cushion && numOfLegs >= amount && numOfArms >= amount && numOfSeats >= amount
+                && numOfCushions >= amount) {
 
             this.prices.add(price);
             this.IDs.add(itemIDs.toString());
@@ -48,7 +50,7 @@ public class Chair extends Furniture {
             int numOfArmsBefore = numOfArms;
             int numOfSeatsBefore = numOfSeats;
             int numOfCushionsBefore = numOfCushions;
-            
+
 
             if (arr[2].equals("Y")) {
                 this.legs = true;
@@ -77,7 +79,7 @@ public class Chair extends Furniture {
             itemIDs.append(" " + results.get(i)[0]);
             resultsRecursion.remove(i);
             checkRequest(resultsRecursion);
-            
+
             legs = legsBefore;
             arms = armsBefore;
             seat = seatBefore;
@@ -100,9 +102,8 @@ public class Chair extends Furniture {
                 tmp = i;
             }
         }
-        if(!IDs.isEmpty()) {
-        	result += IDs.get(tmp).substring(1);
+        if (!IDs.isEmpty()) {
+            result += IDs.get(tmp).substring(1);
         }
-       
     }
 }
