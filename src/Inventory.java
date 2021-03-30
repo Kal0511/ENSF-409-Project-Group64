@@ -13,21 +13,26 @@ public class Inventory {
     public String category;
     public String type;
     public int amount;
-    public String[] possibleManufacturersID;
 
     String entry = null;
     String items = null;
     int itemPrice = 0;
+    
+    // possible manufacturers for each category of furniture
+    public String[] possibleManufacturersChair = {"002", "003", "004", "005"};
+    public String[] possibleManufacturersDesk = {"001", "002", "004", "005"};
+    public String[] possibleManufacturersLamp = {"002", "004", "005"};
+    public String[] possibleManufacturersFiling = {"002", "004", "005"};
 
-    //    Set<String[]> resultList = new HashSet<String[]>();
     LinkedList<String[]> resultList = new LinkedList<String[]>();
 
     public int getAmount() {
         return this.amount;
     }
-
+    
+    // reads input from user
     public void getUserRequest() {
-        BufferedReader reader = new BufferedReader(new InputStreamReader(System.in));       // for reading input
+        BufferedReader reader = new BufferedReader(new InputStreamReader(System.in));
         try {
             System.out.print("User request: ");
             entry = reader.readLine();                     // read input line
@@ -87,6 +92,9 @@ public class Inventory {
                 this.category = "Filing";
                 tmp = entry.toLowerCase().split(" filing")[0];
                 this.type = toTitleCase(tmp);
+            } else {
+                System.out.println("Unknown item.");
+                System.exit(1);
             }
             tmp = entry.split(", ")[1];
             this.amount = Integer.parseInt(tmp);
@@ -137,6 +145,25 @@ public class Inventory {
         }
     }
 
+    // find manufacturer names from database, replace possibleManufacturersID with actual names
+    public void findManuID(String[] x) throws SQLException {
+        String query = null;
+        ResultSet resultSet = null;
+        for (int i = 0; i < x.length; i++) {
+            try {
+                query = "SELECT Name FROM Manufacturer WHERE ManuID = ?";
+                PreparedStatement myStmt = dbConnect.prepareStatement(query);
+                myStmt.setString(1, x[i]);
+                resultSet = myStmt.executeQuery();
+            } catch (SQLException ex) {
+                ex.printStackTrace();
+            }
+            while (resultSet.next()) {
+                x[i] = resultSet.getString("Name");
+            }
+        }
+    }
+
     // retrives all items matching user request, calls other methods to calculate cheapest option
     public void evaluvateRequest() throws SQLException {
         int i = 0;
@@ -149,16 +176,7 @@ public class Inventory {
                 resultList.add(arr);
                 i++;
             }
-            possibleManufacturersID = new String[resultList.size()];
-            int j = 0;
-            String tmp = "";
-            for (String[] x : resultList) {
-                if (j < possibleManufacturersID.length && !tmp.contains(x[7]))
-                    possibleManufacturersID[j] = x[7];
-                j++;
-                tmp += x[7] + " ";
-            }
-            findManufacturers();
+            findManuID(possibleManufacturersChair);
             Chair chair = new Chair(this.amount);
             chair.checkRequest(resultList);
             chair.checkPrices();
@@ -176,15 +194,7 @@ public class Inventory {
                 resultList.add(arr);
                 i++;
             }
-            possibleManufacturersID = new String[resultList.size()];
-            int j = 0;
-            String tmp = "";
-            for (String[] x : resultList) {
-                if (j < possibleManufacturersID.length && !tmp.contains(x[6]))
-                    possibleManufacturersID[j] = x[6];
-                j++;
-                tmp += x[6] + " ";
-            }
+            findManuID(possibleManufacturersDesk);
             Desk desk = new Desk(amount);
             desk.checkRequest(resultList);
             desk.checkPrices();
@@ -202,15 +212,7 @@ public class Inventory {
                 resultList.add(arr);
                 i++;
             }
-            possibleManufacturersID = new String[resultList.size()];
-            int j = 0;
-            String tmp = "";
-            for (String[] x : resultList) {
-                if (j < possibleManufacturersID.length && !tmp.contains(x[6]))
-                    possibleManufacturersID[j] = x[6];
-                j++;
-                tmp += x[6] + " ";
-            }
+            findManuID(possibleManufacturersFiling);
             Filing filing = new Filing(amount);
             filing.checkRequest(resultList);
             filing.checkPrices();
@@ -228,16 +230,7 @@ public class Inventory {
                 resultList.add(arr);
                 i++;
             }
-            possibleManufacturersID = new String[resultList.size()];
-            int j = 0;
-            String tmp = "";
-            for (String[] x : resultList) {
-                if (j < possibleManufacturersID.length && !tmp.contains(x[5]))
-                    possibleManufacturersID[j] = x[5];
-                j++;
-                tmp += x[5] + " ";
-            }
-            findManufacturers();
+            findManuID(possibleManufacturersLamp);
             Lamp lamp = new Lamp(amount);
             lamp.checkRequest(resultList);
             lamp.checkPrices();
@@ -247,10 +240,6 @@ public class Inventory {
             this.items = lamp.result;
         }
         results.close();
-    }
-
-    // find manufacturer names from database, replace possibleManufacturersID with actual names
-    public void findManufacturers() {
     }
 
     // updates database by deleting items being bought
@@ -280,6 +269,35 @@ public class Inventory {
         }
     }
 
+    // makes sure an order can be filled, outputs message if not
+    public void checkIfOrderFilled() {
+        if (items.equals("")) {
+            String output = "";
+            output += "Order cannot be filled based on current inventory. Suggested manufacturers are ";
+            if (category.equals("Chair"))
+                for (int i = 0; i < possibleManufacturersChair.length; i++) {
+                    output += possibleManufacturersChair[i];
+                    output += ", ";
+                }
+            if (category.equals("Desk"))
+                for (int i = 0; i < possibleManufacturersDesk.length; i++) {
+                    output += possibleManufacturersDesk[i];
+                    output += ", ";
+                }
+            if (category.equals("Lamp"))
+                for (int i = 0; i < possibleManufacturersLamp.length; i++) {
+                    output += possibleManufacturersLamp[i];
+                    output += ", ";
+                }
+            if (category.equals("Filing"))
+                for (int i = 0; i < possibleManufacturersFiling.length; i++) {
+                    output += possibleManufacturersFiling[i];
+                    output += ", ";
+                }
+            System.out.println(output.substring(0, output.length() - 2));
+            System.exit(1);
+        }
+    }
 
     // write to file called orderForm.txt
     public void write() {
