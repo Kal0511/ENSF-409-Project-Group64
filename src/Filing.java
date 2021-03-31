@@ -17,11 +17,15 @@ public class Filing extends Furniture {
     StringBuffer itemIDs = new StringBuffer("");
     LinkedList<Integer> prices = new LinkedList<Integer>();
     LinkedList<String> IDs = new LinkedList<String>();
-
+    //constructor
     public Filing(int amount) {
         this.amount = amount;
     }
-
+     /*
+    * checkRequest takes in a linked list of String arrays and has no return type.
+    * method uses recursion to determine any possible valid combinations of filings 
+    * 
+    */
     public void checkRequest(LinkedList<String[]> results) {
 
         if (rails && drawers && cabinet && numOfRails >= amount && numOfDrawers >= amount && numOfCabinet >= amount) {
