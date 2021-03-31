@@ -1,3 +1,7 @@
+/*
+* Chair is a class that determines the cheapest valid combination of all lamps 
+* of the specified type to fulfill the order. 
+*/
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.*;
