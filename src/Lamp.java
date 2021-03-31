@@ -1,3 +1,7 @@
+/*
+* Lamp is a class that determines the cheapest valid combination of all lamps 
+* of the specified type to fulfill the order. 
+*/
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.*;
@@ -15,11 +19,14 @@ public class Lamp extends Furniture {
     StringBuffer itemIDs = new StringBuffer("");
     LinkedList<Integer> prices = new LinkedList<Integer>();
     LinkedList<String> IDs = new LinkedList<String>();
-
+    // constructor
     public Lamp(int amount) {
         this.amount = amount;
     }
-
+    /*
+    * checkRequest takes in a linked list of String arrays and has no return type.
+    * method uses recursion to 
+    */
     public void checkRequest(LinkedList<String[]> results) {
 
         if (base && bulb && numOfBase >= amount && numOfBulb >= amount) {
