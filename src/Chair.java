@@ -19,11 +19,15 @@ public class Chair extends Furniture {
     StringBuffer itemIDs = new StringBuffer("");
     LinkedList<Integer> prices = new LinkedList<Integer>();
     LinkedList<String> IDs = new LinkedList<String>();
-
+    //constructor
     public Chair(int amount) {
         this.amount = amount;
     }
-
+     /*
+    * checkRequest takes in a linked list of String arrays and has no return type.
+    * method uses recursion to determine any possible valid combinations of chairs. 
+    * 
+    */
     public void checkRequest(LinkedList<String[]> results) {
 
         if (legs && arms && seat && cushion && numOfLegs >= amount && numOfArms >= amount && numOfSeats >= amount
