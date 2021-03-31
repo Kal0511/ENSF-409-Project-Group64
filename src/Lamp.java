@@ -1,5 +1,10 @@
 import java.util.ArrayList;
 
+/*
+* Lamp is a class that determines the cheapest valid combination of all lamps 
+* of the specified type to fulfill the order. 
+*/
+
 public class Lamp {
 	private ArrayList<String> IDs;
 	private int numOfBase;
@@ -31,7 +36,7 @@ public class Lamp {
 		this.totalPrice = _price;
 		this.completeSet = Math.min(numOfBase, numOfBulb);
 	}
-	
+
 	public void addItem(Lamp add) {
 		if (IDs.contains(add.IDs.get(0))) {
 			return;
@@ -43,6 +48,11 @@ public class Lamp {
 		completeSet = Math.min(numOfBase, numOfBulb);
 	}
 
+	/*
+	 * checkRequest takes in a linked list of String arrays and has no return type.
+	 * method uses recursion to determine any possible valid combinations of filings
+	 * 
+	 */
 	public static Lamp processRequest(ArrayList<Lamp> list, int requestSize) {
 		if (requestSize == 0) {
 			return null;
@@ -53,12 +63,18 @@ public class Lamp {
 			list.remove(0);
 			cheapest = cheapestGroupRecursion(new ArrayList<Lamp>(list), curr, cheapest, requestSize);
 		}
-		if(cheapest==null) {
-			return new Lamp(null,  0,  0, 0);
+		if (cheapest == null) {
+			return new Lamp(null, 0, 0, 0);
 		}
 		return cheapest;
 	}
 
+	/*
+	 * checkPrices is a method with no arguments and no return type. method goes
+	 * through possible combinations and determines which one is the cheapest. It
+	 * then updates the resulsts string to represent the combination the corresponds
+	 * to that price.
+	 */
 	public static Lamp cheapestGroupRecursion(ArrayList<Lamp> list, Lamp curr, Lamp best, int requestSize) {
 		if (curr.completeSet >= requestSize) {
 			if (best == null) {
