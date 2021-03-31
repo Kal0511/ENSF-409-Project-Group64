@@ -1,112 +1,92 @@
-/*
-* Desk is a class that determines the cheapest valid combination of all lamps 
-* of the specified type to fulfill the order. 
-*/
-import java.sql.ResultSet;
-import java.sql.SQLException;
-import java.util.*;
+import java.util.ArrayList;
 
-public class Desk extends Furniture {
-    boolean legs = false;
-    boolean top = false;
-    boolean drawer = false;
-    boolean check = false;
-    int numOfLegs = 0;
-    int numOfTop = 0;
-    int numOfDrawer = 0;
-    int minPrice = 9999999;
-    int price = 0;
-    int amount;
-    String result = "";
-    StringBuffer itemIDs = new StringBuffer("");
-    LinkedList<Integer> prices = new LinkedList<Integer>();
-    LinkedList<String> IDs = new LinkedList<String>();
-    //constructor
-    public Desk(int amount) {
-        this.amount = amount;
-    }
-     /*
-    * checkRequest takes in a linked list of String arrays and has no return type.
-    * method uses recursion to determine any possible valid combinations of desks 
-    * 
-    */
-    public void checkRequest(LinkedList<String[]> results) {
+public class Desk {
+	private ArrayList<String> IDs;
+	private int numOfLegs;
+	private int numOfTop;
+	private int numOfDrawer;
+	private int totalPrice;
+	private int completeSet;
+	
+	public ArrayList<String> getIDs() {
+		return this.IDs;
+	}
 
-        if (legs && top && drawer && numOfLegs >= amount && numOfTop >= amount && numOfDrawer >= amount) {
+	public int getLegs() {
+		return this.numOfLegs;
+	}
 
-            this.prices.add(price);
-            this.IDs.add(itemIDs.toString());
-//    		System.out.println("combination found: "+itemIDs.toString());
-            return;
-        }
-        if (results.size() < 1) {
-//    		System.out.println("no combination found: "+itemIDs.toString());
-            return;
-        }
+	public int getTop() {
+		return this.numOfTop;
+	}
+	
+	public int getDrawer() {
+		return this.numOfDrawer;
+	}
 
-        for (int i = 0; i < results.size(); i++) {
-            String[] arr = results.get(i);
+	public int getPrice() {
+		return this.totalPrice;
+	}
 
-            boolean legsBefore = legs;
-            boolean topBefore = top;
-            boolean drawerBefore = drawer;
-            int numOfLegsBefore = numOfLegs;
-            int numOfTopBefore = numOfTop;
-            int numOfDrawerBefore = numOfDrawer;
+	public Desk(String _ID, int _legs, int _top, int _drawer, int _price) {
+		this.IDs = new ArrayList<String>();
+		this.IDs.add(_ID);
+		this.numOfLegs = _legs;
+		this.numOfTop = _top;
+		this.numOfDrawer = _drawer;
+		this.totalPrice = _price;
+		this.completeSet = Math.min(numOfLegs, Math.min(numOfTop, numOfDrawer));
+	}
+	
+	public void addItem(Desk add) {
+		if (IDs.contains(add.IDs.get(0))) {
+			return;
+		}
+		IDs.add(add.IDs.get(0));
+		numOfLegs += add.numOfLegs;
+		numOfTop += add.numOfTop;
+		numOfDrawer += add.numOfDrawer;
+		totalPrice += add.totalPrice;
+		completeSet = Math.min(numOfLegs, Math.min(numOfTop, numOfDrawer));
+	}
 
+	public static Desk processRequest(ArrayList<Desk> list, int requestSize) {
+		if (requestSize == 0) {
+			return null;
+		}
+		Desk cheapest = null;
+		while (list.size() != 0) {
+			Desk curr = list.get(0);
+			list.remove(0);
+			cheapest = cheapestGroupRecursion(new ArrayList<Desk>(list), curr, cheapest, requestSize);
+		}
+		if(cheapest==null) {
+			return new Desk(null, 0, 0, 0, 0);
+		}
+		return cheapest;
+	}
 
-            if (arr[2].equals("Y")) {
-                this.legs = true;
-                numOfLegs++;
-            }
-            if (arr[3].equals("Y")) {
-                this.top = true;
-                numOfTop++;
-            }
-            if (arr[4].equals("Y")) {
-                this.drawer = true;
-                numOfDrawer++;
-            }
-
-            LinkedList<String[]> resultsRecursion = new LinkedList<String[]>();
-
-            for (int j = 0; j < results.size(); j++) {
-                String[] copy = Arrays.copyOf(results.get(j), results.get(j).length);
-                resultsRecursion.add(copy);
-            }
-            price += Integer.parseInt(results.get(i)[5]);
-            itemIDs.append(" " + results.get(i)[0]);
-            resultsRecursion.remove(i);
-            checkRequest(resultsRecursion);
-
-            legs = legsBefore;
-            top = topBefore;
-            drawer = drawerBefore;
-            numOfLegs = numOfLegsBefore;
-            numOfTop = numOfTopBefore;
-            numOfDrawer = numOfDrawerBefore;
-            price -= Integer.parseInt(results.get(i)[5]);
-            itemIDs.delete(itemIDs.length() - results.get(i)[0].length() - 1, itemIDs.length());
-        }
-    }
-    /*
-    *checkPrices is a method with no arguments and no return type.
-    * method goes through possible combinations and determines which one
-    * is the cheapest. It then updates the resulsts string to represent the
-    * combination the corresponds to that price.
-    */ 
-    public void checkPrices() {
-        int tmp = 0;
-        for (int i = 0; i < prices.size(); i++) {
-            //System.out.print(prices.get(i) + " ");
-            if (prices.get(i) < minPrice) {
-                minPrice = prices.get(i);
-                tmp = i;
-            }
-        }
-        if (!IDs.isEmpty()) {
-            result += IDs.get(tmp).substring(1);
-        }
-
-    }
+	public static Desk cheapestGroupRecursion(ArrayList<Desk> list, Desk curr, Desk best, int requestSize) {
+		if (curr.completeSet >= requestSize) {
+			if (best == null) {
+				best = curr;
+				return best;
+			}
+			if (curr.totalPrice < best.totalPrice) {
+				best = curr;
+				return best;
+			}
+		}
+		if (best != null) {
+			if (curr.totalPrice > best.totalPrice) {
+				return best;
+			}
+		}
+		while (list.size() != 0) {
+			curr.addItem(list.get(0));
+			list.remove(0);
+			best = cheapestGroupRecursion(new ArrayList<Desk>(list), curr, best, requestSize);
+		}
+		return best;
+	}
 }

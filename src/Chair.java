@@ -1,122 +1,99 @@
-/*
-* Chair is a class that determines the cheapest valid combination of all lamps 
-* of the specified type to fulfill the order. 
-*/
-import java.sql.ResultSet;
-import java.sql.SQLException;
-import java.util.*;
+import java.util.ArrayList;
 
-public class Chair extends Furniture {
-    boolean legs = false;
-    boolean arms = false;
-    boolean seat = false;
-    boolean cushion = false;
-    boolean check = false;
-    int numOfLegs = 0;
-    int numOfArms = 0;
-    int numOfSeats = 0;
-    int numOfCushions = 0;
-    int minPrice = 9999999;
-    int price = 0;
-    int amount;
-    String result = "";
-    StringBuffer itemIDs = new StringBuffer("");
-    LinkedList<Integer> prices = new LinkedList<Integer>();
-    LinkedList<String> IDs = new LinkedList<String>();
-    //constructor
-    public Chair(int amount) {
-        this.amount = amount;
-    }
-     /*
-    * checkRequest takes in a linked list of String arrays and has no return type.
-    * method uses recursion to determine any possible valid combinations of chairs. 
-    * 
-    */
-    public void checkRequest(LinkedList<String[]> results) {
+public class Chair{
+    private ArrayList<String> IDs;
+    private int numOfLegs;
+    private int numOfArms;
+    private int numOfSeat;
+    private int numOfCushion;
+	private int totalPrice;
+	private int completeSet;
+	
+	public ArrayList<String> getIDs() {
+		return this.IDs;
+	}
 
-        if (legs && arms && seat && cushion && numOfLegs >= amount && numOfArms >= amount && numOfSeats >= amount
-                && numOfCushions >= amount) {
+	public int getLegs() {
+		return this.numOfLegs;
+	}
 
-            this.prices.add(price);
-            this.IDs.add(itemIDs.toString());
-//    		System.out.println("combination found: "+itemIDs.toString());
-            return;
-        }
-        if (results.size() < 1) {
-//    		System.out.println("no combination found: "+itemIDs.toString());
-            return;
-        }
+	public int getArms() {
+		return this.numOfArms;
+	}
+	
+	public int getSeat() {
+		return this.numOfSeat;
+	}
+	
+	public int getCushion() {
+		return this.numOfCushion;
+	}
 
-        for (int i = 0; i < results.size(); i++) {
-            String[] arr = results.get(i);
+	public int getPrice() {
+		return this.totalPrice;
+	}
 
-            boolean legsBefore = legs;
-            boolean armsBefore = arms;
-            boolean seatBefore = seat;
-            boolean cushionBefore = cushion;
-            int numOfLegsBefore = numOfLegs;
-            int numOfArmsBefore = numOfArms;
-            int numOfSeatsBefore = numOfSeats;
-            int numOfCushionsBefore = numOfCushions;
+	public Chair(String _ID, int _legs, int _arms, int _seat, int _cushion, int _price) {
+		this.IDs = new ArrayList<String>();
+		this.IDs.add(_ID);
+		this.numOfLegs = _legs;
+		this.numOfArms = _arms;
+		this.numOfSeat = _seat;
+		this.numOfCushion = _cushion;
+		this.totalPrice = _price;
+		this.completeSet = Math.min(Math.min(numOfLegs,numOfArms), Math.min(numOfSeat, numOfCushion));
+	}
+    
+	public void addItem(Chair add) {
+		if (IDs.contains(add.IDs.get(0))) {
+			return;
+		}
+		IDs.add(add.IDs.get(0));
+		numOfLegs += add.numOfLegs;
+		numOfArms += add.numOfArms;
+		numOfSeat += add.numOfSeat;
+		numOfCushion += add.numOfCushion;
+		totalPrice += add.totalPrice;
+		completeSet = Math.min(Math.min(numOfLegs,numOfArms), Math.min(numOfSeat, numOfCushion));
+	}
 
+	public static Chair processRequest(ArrayList<Chair> list, int requestSize) {
+		if (requestSize == 0) {
+			return null;
+		}
+		Chair cheapest = null;
+		while (list.size() != 0) {
+			Chair curr = list.get(0);
+			list.remove(0);
+			cheapest = cheapestGroupRecursion(new ArrayList<Chair>(list), curr, cheapest, requestSize);
+		}
+		if(cheapest==null) {
+			return new Chair(null,  0,  0,  0,0,  0);
+		}
+		return cheapest;
+	}
 
-            if (arr[2].equals("Y")) {
-                this.legs = true;
-                numOfLegs++;
-            }
-            if (arr[3].equals("Y")) {
-                this.arms = true;
-                numOfArms++;
-            }
-            if (arr[4].equals("Y")) {
-                this.seat = true;
-                numOfSeats++;
-            }
-            if (arr[5].equals("Y")) {
-                this.cushion = true;
-                numOfCushions++;
-            }
-
-            LinkedList<String[]> resultsRecursion = new LinkedList<String[]>();
-
-            for (int j = 0; j < results.size(); j++) {
-                String[] copy = Arrays.copyOf(results.get(j), results.get(j).length);
-                resultsRecursion.add(copy);
-            }
-            price += Integer.parseInt(results.get(i)[6]);
-            itemIDs.append(" " + results.get(i)[0]);
-            resultsRecursion.remove(i);
-            checkRequest(resultsRecursion);
-
-            legs = legsBefore;
-            arms = armsBefore;
-            seat = seatBefore;
-            cushion = cushionBefore;
-            numOfLegs = numOfLegsBefore;
-            numOfArms = numOfArmsBefore;
-            numOfSeats = numOfSeatsBefore;
-            numOfCushions = numOfCushionsBefore;
-            price -= Integer.parseInt(results.get(i)[6]);
-            itemIDs.delete(itemIDs.length() - results.get(i)[0].length() - 1, itemIDs.length());
-        }
-    }
-    /*
-    *checkPrices is a method with no arguments and no return type.
-    * method goes through possible combinations and determines which one
-    * is the cheapest. It then updates the resulsts string to represent the
-    * combination the corresponds to that price.
-    */ 
-    public void checkPrices() {
-        int tmp = 0;
-        for (int i = 0; i < prices.size(); i++) {
-            //System.out.print(prices.get(i) + " ");
-            if (prices.get(i) < minPrice) {
-                minPrice = prices.get(i);
-                tmp = i;
-            }
-        }
-        if (!IDs.isEmpty()) {
-            result += IDs.get(tmp).substring(1);
-        }
-    }
+	public static Chair cheapestGroupRecursion(ArrayList<Chair> list, Chair curr, Chair best, int requestSize) {
+		if (curr.completeSet >= requestSize) {
+			if (best == null) {
+				best = curr;
+				return best;
+			}
+			if (curr.totalPrice < best.totalPrice) {
+				best = curr;
+				return best;
+			}
+		}
+		if (best != null) {
+			if (curr.totalPrice > best.totalPrice) {
+				return best;
+			}
+		}
+		while (list.size() != 0) {
+			curr.addItem(list.get(0));
+			list.remove(0);
+			best = cheapestGroupRecursion(new ArrayList<Chair>(list), curr, best, requestSize);
+		}
+		return best;
+	}
 }
