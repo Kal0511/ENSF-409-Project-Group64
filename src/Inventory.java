@@ -2,6 +2,11 @@ import java.sql.*;
 import java.io.*;
 import java.util.*;
 
+/*
+* Inventory is a class that uses the SQL inventory database to process the
+* the user requested order for a piece of furniture, specified by category and type. 
+*/
+
 public class Inventory {
 	private final String DBURL = "jdbc:mysql://localhost/inventory"; // store the database url information
 	private final String USERNAME = "adam"; // store the user's account username
@@ -27,7 +32,12 @@ public class Inventory {
 	public Inventory() {
 	}
 
-	// reads input from user
+	/*
+	 * getUserRequest is a a method with no return type and no arguments that
+	 * prompts the user for input and uses a BufferedReader to to read in the user
+	 * request. The user input is then passed to the AnalyzeEntry method to be
+	 * parsed.
+	 */
 	public void getUserRequest() {
 		BufferedReader reader = new BufferedReader(new InputStreamReader(System.in));
 		try {
@@ -42,22 +52,34 @@ public class Inventory {
 		// System.out.println("Amount: " + this.amount);
 	}
 
-	// getter
+	/*
+	 * getDBURL is a method with no arguments that returns the String DBURL that
+	 * connects to mySQL
+	 */
 	public String getDBURL() {
 		return DBURL;
 	}
 
-	// getter
+	/*
+	 * getUSERNAME is a method with no arguments that returns the String USERNAME.
+	 * This is the name of the current MySQL user
+	 */
 	public String getUSERNAME() {
 		return USERNAME;
 	}
 
-	// getter
+	/*
+	 * getPASSWORD is a method with no arguments that returns the String PASSWORD.
+	 * This is the password to the respective mySQL User
+	 */
 	public String getPASSWORD() {
 		return PASSWORD;
 	}
 
-	// Initialize connection to mysql
+	/*
+	 * initializeConnection is a method with no arguments and no return type that
+	 * creates a connection from the program to the SQL database
+	 */
 	public void initializeConnection() {
 		try {
 			dbConnect = DriverManager.getConnection(this.DBURL, this.USERNAME, this.PASSWORD);
@@ -66,7 +88,11 @@ public class Inventory {
 		}
 	}
 
-	// Dissects input from user into required variables
+	/*
+	 * AnalyzeEntry is a method that takes in the user inputted String, entry as an
+	 * argument and parses it to determine the category, type of furniture, and
+	 * amount that the user has requested. This method has no return type.
+	 */
 	public void AnalyzeEntry(String entry) {
 		try {
 			entry = entry.toLowerCase();
@@ -84,7 +110,10 @@ public class Inventory {
 		}
 	}
 
-	// convert to title case
+	/*
+	 * toTitleCase is a method that takes one String as an argument, converts it to
+	 * title case and returns it
+	 */
 	public String toTitleCase(String x) {
 		StringBuilder titleCase = new StringBuilder(x.length());
 		boolean nextTitleCase = true;
@@ -101,7 +130,10 @@ public class Inventory {
 		return titleCase.toString();
 	}
 
-	// reads from from required table in mysql database INVENTORY
+	/*
+	 * pullData has no arguments and no return type. method loads in all furniture
+	 * belonging to the respective category and type into a ResultSet
+	 */
 	public void pullData() {
 		String query = null;
 		try {
@@ -120,14 +152,17 @@ public class Inventory {
 			// while (results.next()) {
 			// System.out.println("Print results: " + results.getString("id"));
 			// }
-//            myStmt.close();
 		} catch (SQLException ex) {
 			ex.printStackTrace();
 		}
 	}
 
-	// find manufacturer names from database, replace possibleManufacturersID with
-	// actual names
+	/*
+	 * findManuID takes in a String array of manufacturer ID's as an argument and
+	 * replaces the contents of that string with the actual names of the respective
+	 * manufacturers in the same order. This method returns nothing.
+	 * 
+	 */
 	public void findManuID(String[] x) throws SQLException {
 		String query = null;
 		ResultSet resultSet = null;
@@ -146,8 +181,12 @@ public class Inventory {
 		}
 	}
 
-	// retrives all items matching user request, calls other methods to calculate
-	// cheapest option
+	/*
+	 * evaluateRequest is a method with no arguments and no return type. method goes
+	 * through the results ResultSet and saves all the properties of each piece of
+	 * furniture to their own String arrays that are added to a the resultList
+	 * LinkedList
+	 */
 	public void evaluvateRequest() throws SQLException {
 		if (category.equals("chair")) {
 			ArrayList<Chair> list = new ArrayList<Chair>();
@@ -161,7 +200,7 @@ public class Inventory {
 			Chair best = Chair.processRequest(list, amount);
 			this.items = best.getIDs();
 			this.itemPrice = best.getPrice();
-			
+
 		} else if (category.equals("desk")) {
 			ArrayList<Desk> list = new ArrayList<Desk>();
 			while (results.next()) {
@@ -210,7 +249,10 @@ public class Inventory {
 		}
 	}
 
-	// updates database by deleting items being bought
+	/*
+	 * updateDatabase is a method that has no arguments and no returns nothing This
+	 * method updates the database by deleting the items that were purchased.
+	 */
 	public void updateDatabase() {
 		String query = null;
 		PreparedStatement myStmt = null;
@@ -234,7 +276,11 @@ public class Inventory {
 		}
 	}
 
-	// makes sure an order can be filled, outputs message if not
+	/*
+	 * checkIfOrderFilled is a method with no arguments that checks to see if it is
+	 * possible to fill the order. if it cannot be fulfilled it outputs a message.
+	 * returns nothing
+	 */
 	public void checkIfOrderFilled() {
 		if (items.equals(null)) {
 			String output = "";
@@ -264,7 +310,10 @@ public class Inventory {
 		}
 	}
 
-	// write to file called orderForm.txt
+	/*
+	 * write is a method with no arguments that writes the order details to a file
+	 * called orderForm.txt. no return type.
+	 */
 	public void write() {
 		System.out.print("Output: Purchase ");
 		for (int i = 0; i < items.size(); i++) {
