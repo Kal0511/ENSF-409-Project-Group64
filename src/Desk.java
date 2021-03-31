@@ -1,5 +1,10 @@
 import java.util.ArrayList;
 
+/*
+* Desk is a class that determines the cheapest valid combination of all lamps 
+* of the specified type to fulfill the order. 
+*/
+
 public class Desk {
 	private ArrayList<String> IDs;
 	private int numOfLegs;
@@ -7,7 +12,7 @@ public class Desk {
 	private int numOfDrawer;
 	private int totalPrice;
 	private int completeSet;
-	
+
 	public ArrayList<String> getIDs() {
 		return this.IDs;
 	}
@@ -19,7 +24,7 @@ public class Desk {
 	public int getTop() {
 		return this.numOfTop;
 	}
-	
+
 	public int getDrawer() {
 		return this.numOfDrawer;
 	}
@@ -37,7 +42,7 @@ public class Desk {
 		this.totalPrice = _price;
 		this.completeSet = Math.min(numOfLegs, Math.min(numOfTop, numOfDrawer));
 	}
-	
+
 	public void addItem(Desk add) {
 		if (IDs.contains(add.IDs.get(0))) {
 			return;
@@ -50,6 +55,11 @@ public class Desk {
 		completeSet = Math.min(numOfLegs, Math.min(numOfTop, numOfDrawer));
 	}
 
+	/*
+	 * checkRequest takes in a linked list of String arrays and has no return type.
+	 * method uses recursion to determine any possible valid combinations of desks
+	 * 
+	 */
 	public static Desk processRequest(ArrayList<Desk> list, int requestSize) {
 		if (requestSize == 0) {
 			return null;
@@ -60,12 +70,18 @@ public class Desk {
 			list.remove(0);
 			cheapest = cheapestGroupRecursion(new ArrayList<Desk>(list), curr, cheapest, requestSize);
 		}
-		if(cheapest==null) {
+		if (cheapest == null) {
 			return new Desk(null, 0, 0, 0, 0);
 		}
 		return cheapest;
 	}
 
+	/*
+	 * checkPrices is a method with no arguments and no return type. method goes
+	 * through possible combinations and determines which one is the cheapest. It
+	 * then updates the results string to represent the combination the corresponds
+	 * to that price.
+	 */
 	public static Desk cheapestGroupRecursion(ArrayList<Desk> list, Desk curr, Desk best, int requestSize) {
 		if (curr.completeSet >= requestSize) {
 			if (best == null) {
