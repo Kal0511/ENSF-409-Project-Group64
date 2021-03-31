@@ -81,7 +81,12 @@ public class Desk extends Furniture {
             itemIDs.delete(itemIDs.length() - results.get(i)[0].length() - 1, itemIDs.length());
         }
     }
-
+    /*
+    *checkPrices is a method with no arguments and no return type.
+    * method goes through possible combinations and determines which one
+    * is the cheapest. It then updates the resulsts string to represent the
+    * combination the corresponds to that price.
+    */ 
     public void checkPrices() {
         int tmp = 0;
         for (int i = 0; i < prices.size(); i++) {
