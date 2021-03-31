@@ -1,14 +1,18 @@
 import java.util.ArrayList;
 
-public class Chair{
-    private ArrayList<String> IDs;
-    private int numOfLegs;
-    private int numOfArms;
-    private int numOfSeat;
-    private int numOfCushion;
+/*
+* Chair is a class that determines the cheapest valid combination of all lamps 
+* of the specified type to fulfill the order. 
+*/
+public class Chair {
+	private ArrayList<String> IDs;
+	private int numOfLegs;
+	private int numOfArms;
+	private int numOfSeat;
+	private int numOfCushion;
 	private int totalPrice;
 	private int completeSet;
-	
+
 	public ArrayList<String> getIDs() {
 		return this.IDs;
 	}
@@ -20,11 +24,11 @@ public class Chair{
 	public int getArms() {
 		return this.numOfArms;
 	}
-	
+
 	public int getSeat() {
 		return this.numOfSeat;
 	}
-	
+
 	public int getCushion() {
 		return this.numOfCushion;
 	}
@@ -41,9 +45,9 @@ public class Chair{
 		this.numOfSeat = _seat;
 		this.numOfCushion = _cushion;
 		this.totalPrice = _price;
-		this.completeSet = Math.min(Math.min(numOfLegs,numOfArms), Math.min(numOfSeat, numOfCushion));
+		this.completeSet = Math.min(Math.min(numOfLegs, numOfArms), Math.min(numOfSeat, numOfCushion));
 	}
-    
+
 	public void addItem(Chair add) {
 		if (IDs.contains(add.IDs.get(0))) {
 			return;
@@ -54,9 +58,14 @@ public class Chair{
 		numOfSeat += add.numOfSeat;
 		numOfCushion += add.numOfCushion;
 		totalPrice += add.totalPrice;
-		completeSet = Math.min(Math.min(numOfLegs,numOfArms), Math.min(numOfSeat, numOfCushion));
+		completeSet = Math.min(Math.min(numOfLegs, numOfArms), Math.min(numOfSeat, numOfCushion));
 	}
 
+	/*
+	 * checkRequest takes in a linked list of String arrays and has no return type.
+	 * method uses recursion to determine any possible valid combinations of chairs.
+	 * 
+	 */
 	public static Chair processRequest(ArrayList<Chair> list, int requestSize) {
 		if (requestSize == 0) {
 			return null;
@@ -67,12 +76,18 @@ public class Chair{
 			list.remove(0);
 			cheapest = cheapestGroupRecursion(new ArrayList<Chair>(list), curr, cheapest, requestSize);
 		}
-		if(cheapest==null) {
-			return new Chair(null,  0,  0,  0,0,  0);
+		if (cheapest == null) {
+			return new Chair(null, 0, 0, 0, 0, 0);
 		}
 		return cheapest;
 	}
 
+	/*
+	 * checkPrices is a method with no arguments and no return type. method goes
+	 * through possible combinations and determines which one is the cheapest. It
+	 * then updates the results string to represent the combination the corresponds
+	 * to that price.
+	 */
 	public static Chair cheapestGroupRecursion(ArrayList<Chair> list, Chair curr, Chair best, int requestSize) {
 		if (curr.completeSet >= requestSize) {
 			if (best == null) {
