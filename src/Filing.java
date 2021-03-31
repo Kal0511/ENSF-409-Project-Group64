@@ -1,5 +1,10 @@
 import java.util.ArrayList;
 
+/*
+* Filing is a class that determines the cheapest valid combination of all lamps 
+* of the specified type to fulfill the order. 
+*/
+
 public class Filing {
 	private ArrayList<String> IDs;
 	private int numOfRails;
@@ -49,7 +54,11 @@ public class Filing {
 		totalPrice += add.totalPrice;
 		completeSet = Math.min(numOfCabinet, Math.min(numOfRails, numOfDrawer));
 	}
-
+    /*
+   * checkRequest takes in a linked list of String arrays and has no return type.
+   * method uses recursion to determine any possible valid combinations of filings 
+   * 
+   */
 	public static Filing processRequest(ArrayList<Filing> list, int requestSize) {
 		if (requestSize == 0) {
 			return null;
@@ -65,7 +74,12 @@ public class Filing {
 		}
 		return cheapest;
 	}
-
+    /*
+    *checkPrices is a method with no arguments and no return type.
+    * method goes through possible combinations and determines which one
+    * is the cheapest. It then updates the resulsts string to represent the
+    * combination the corresponds to that price.
+    */ 
 	public static Filing cheapestGroupRecursion(ArrayList<Filing> list, Filing curr, Filing best, int requestSize) {
 		if (curr.completeSet >= requestSize) {
 			if (best == null) {
