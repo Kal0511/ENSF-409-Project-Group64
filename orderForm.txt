@@ -4,10 +4,11 @@ Faculty Name:
 Contact:
 Date:
 
-Original Request: mesh chair, 1
+Original Request: desk lamp, 2
 
 Itmes Ordered:
-ID: C0942
-ID: C9890
+ID: L112
+ID: L342
+ID: L564
 
-Total Price: $150
+Total Price: $40

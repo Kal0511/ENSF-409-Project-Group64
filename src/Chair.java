@@ -48,17 +48,20 @@ public class Chair {
 		this.completeSet = Math.min(Math.min(numOfLegs, numOfArms), Math.min(numOfSeat, numOfCushion));
 	}
 
-	public void addItem(Chair add) {
-		if (IDs.contains(add.IDs.get(0))) {
-			return;
-		}
-		IDs.add(add.IDs.get(0));
-		numOfLegs += add.numOfLegs;
-		numOfArms += add.numOfArms;
-		numOfSeat += add.numOfSeat;
-		numOfCushion += add.numOfCushion;
-		totalPrice += add.totalPrice;
-		completeSet = Math.min(Math.min(numOfLegs, numOfArms), Math.min(numOfSeat, numOfCushion));
+	public Chair addItem(Chair add) {
+		Chair temp = new Chair(null, numOfLegs, numOfArms, numOfSeat, numOfCushion, totalPrice);
+		temp.IDs = new ArrayList<String>(IDs);
+//		if (IDs.contains(add.IDs.get(0))) {
+//			return temp;
+//		}
+		temp.IDs.add(add.IDs.get(0));
+		temp.numOfLegs += add.numOfLegs;
+		temp.numOfArms += add.numOfArms;
+		temp.numOfSeat += add.numOfSeat;
+		temp.numOfCushion += add.numOfCushion;
+		temp.totalPrice += add.totalPrice;
+		temp.completeSet = Math.min(Math.min(temp.numOfLegs, temp.numOfArms), Math.min(temp.numOfSeat, temp.numOfCushion));
+		return temp;
 	}
 
 	/*
@@ -68,7 +71,7 @@ public class Chair {
 	 */
 	public static Chair processRequest(ArrayList<Chair> list, int requestSize) {
 		if (requestSize == 0) {
-			return null;
+			return new Chair(null, 0, 0, 0, 0, 0);
 		}
 		Chair cheapest = null;
 		while (list.size() != 0) {
@@ -91,12 +94,10 @@ public class Chair {
 	public static Chair cheapestGroupRecursion(ArrayList<Chair> list, Chair curr, Chair best, int requestSize) {
 		if (curr.completeSet >= requestSize) {
 			if (best == null) {
-				best = curr;
-				return best;
+				return curr;
 			}
 			if (curr.totalPrice < best.totalPrice) {
-				best = curr;
-				return best;
+				return curr;
 			}
 		}
 		if (best != null) {
@@ -105,9 +106,9 @@ public class Chair {
 			}
 		}
 		while (list.size() != 0) {
-			curr.addItem(list.get(0));
+			Chair temp = curr.addItem(list.get(0));
 			list.remove(0);
-			best = cheapestGroupRecursion(new ArrayList<Chair>(list), curr, best, requestSize);
+			best = cheapestGroupRecursion(new ArrayList<Chair>(list), temp, best, requestSize);
 		}
 		return best;
 	}

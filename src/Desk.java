@@ -43,16 +43,19 @@ public class Desk {
 		this.completeSet = Math.min(numOfLegs, Math.min(numOfTop, numOfDrawer));
 	}
 
-	public void addItem(Desk add) {
+	public Desk addItem(Desk add) {
+		Desk temp = new Desk(null, 	numOfLegs, numOfTop, numOfDrawer, totalPrice);
+		temp.IDs = new ArrayList<String>(IDs);
 		if (IDs.contains(add.IDs.get(0))) {
-			return;
+			return temp;
 		}
-		IDs.add(add.IDs.get(0));
-		numOfLegs += add.numOfLegs;
-		numOfTop += add.numOfTop;
-		numOfDrawer += add.numOfDrawer;
-		totalPrice += add.totalPrice;
-		completeSet = Math.min(numOfLegs, Math.min(numOfTop, numOfDrawer));
+		temp.IDs.add(add.IDs.get(0));
+		temp.numOfLegs += add.numOfLegs;
+		temp.numOfTop += add.numOfTop;
+		temp.numOfDrawer += add.numOfDrawer;
+		temp.totalPrice += add.totalPrice;
+		temp.completeSet = Math.min(numOfLegs, Math.min(numOfTop, numOfDrawer));
+		return temp;
 	}
 
 	/*
@@ -99,9 +102,9 @@ public class Desk {
 			}
 		}
 		while (list.size() != 0) {
-			curr.addItem(list.get(0));
+			Desk temp = curr.addItem(list.get(0));
 			list.remove(0);
-			best = cheapestGroupRecursion(new ArrayList<Desk>(list), curr, best, requestSize);
+			best = cheapestGroupRecursion(new ArrayList<Desk>(list), temp, best, requestSize);
 		}
 		return best;
 	}

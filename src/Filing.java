@@ -43,16 +43,19 @@ public class Filing {
 		this.completeSet = Math.min(numOfCabinet, Math.min(numOfRails, numOfDrawer));
 	}
 	
-	public void addItem(Filing add) {
-		if (IDs.contains(add.IDs.get(0))) {
-			return;
-		}
-		IDs.add(add.IDs.get(0));
-		numOfRails += add.numOfRails;
-		numOfCabinet += add.numOfCabinet;
-		numOfDrawer += add.numOfDrawer;
-		totalPrice += add.totalPrice;
-		completeSet = Math.min(numOfCabinet, Math.min(numOfRails, numOfDrawer));
+	public Filing addItem(Filing add) {
+//		if (IDs.contains(add.IDs.get(0))) {
+//			return;
+//		}
+		Filing temp = new Filing(null, numOfRails, numOfCabinet, numOfDrawer, totalPrice);
+		temp.IDs = new ArrayList<String>(IDs);
+		temp.IDs.add(add.IDs.get(0));
+		temp.numOfRails += add.numOfRails;
+		temp.numOfCabinet += add.numOfCabinet;
+		temp.numOfDrawer += add.numOfDrawer;
+		temp.totalPrice += add.totalPrice;
+		temp.completeSet = Math.min(temp.numOfCabinet, Math.min(temp.numOfRails, temp.numOfDrawer));
+		return temp;
 	}
     /*
    * checkRequest takes in a linked list of String arrays and has no return type.
@@ -61,7 +64,7 @@ public class Filing {
    */
 	public static Filing processRequest(ArrayList<Filing> list, int requestSize) {
 		if (requestSize == 0) {
-			return null;
+			return new Filing(null,  0,  0,  0,  0);
 		}
 		Filing cheapest = null;
 		while (list.size() != 0) {
@@ -97,9 +100,9 @@ public class Filing {
 			}
 		}
 		while (list.size() != 0) {
-			curr.addItem(list.get(0));
+			Filing temp = curr.addItem(list.get(0));
 			list.remove(0);
-			best = cheapestGroupRecursion(new ArrayList<Filing>(list), curr, best, requestSize);
+			best = cheapestGroupRecursion(new ArrayList<Filing>(list), temp, best, requestSize);
 		}
 		return best;
 	}

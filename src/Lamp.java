@@ -37,15 +37,18 @@ public class Lamp {
 		this.completeSet = Math.min(numOfBase, numOfBulb);
 	}
 
-	public void addItem(Lamp add) {
-		if (IDs.contains(add.IDs.get(0))) {
-			return;
-		}
-		IDs.add(add.IDs.get(0));
-		numOfBase += add.numOfBase;
-		numOfBulb += add.numOfBulb;
-		totalPrice += add.totalPrice;
-		completeSet = Math.min(numOfBase, numOfBulb);
+	public Lamp addItem(Lamp add) {
+//		if (IDs.contains(add.IDs.get(0))) {
+//			return;
+//		}
+		Lamp temp = new Lamp(null, numOfBase, numOfBulb, totalPrice);
+		temp.IDs = new ArrayList<String>(IDs);
+		temp.IDs.add(add.IDs.get(0));
+		temp.numOfBase += add.numOfBase;
+		temp.numOfBulb += add.numOfBulb;
+		temp.totalPrice += add.totalPrice;
+		temp.completeSet = Math.min(temp.numOfBase, temp.numOfBulb);
+		return temp;
 	}
 
 	/*
@@ -55,7 +58,7 @@ public class Lamp {
 	 */
 	public static Lamp processRequest(ArrayList<Lamp> list, int requestSize) {
 		if (requestSize == 0) {
-			return null;
+			return new Lamp(null, 0, 0, 0);
 		}
 		Lamp cheapest = null;
 		while (list.size() != 0) {
@@ -92,9 +95,9 @@ public class Lamp {
 			}
 		}
 		while (list.size() != 0) {
-			curr.addItem(list.get(0));
+			Lamp temp = curr.addItem(list.get(0));
 			list.remove(0);
-			best = cheapestGroupRecursion(new ArrayList<Lamp>(list), curr, best, requestSize);
+			best = cheapestGroupRecursion(new ArrayList<Lamp>(list), temp, best, requestSize);
 		}
 		return best;
 	}

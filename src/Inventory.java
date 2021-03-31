@@ -88,6 +88,15 @@ public class Inventory {
 		}
 	}
 
+	public void close() {
+		try {
+			results.close();
+			dbConnect.close();
+		} catch (SQLException e) {
+			e.printStackTrace();
+		}
+	}
+
 	/*
 	 * AnalyzeEntry is a method that takes in the user inputted String, entry as an
 	 * argument and parses it to determine the category, type of furniture, and
@@ -137,21 +146,22 @@ public class Inventory {
 	public void pullData() {
 		String query = null;
 		try {
-			if (category.equals("chair"))
-				query = "SELECT * FROM Chair WHERE Type = ?";
-			else if (category.equals("desk"))
-				query = "SELECT * FROM Desk WHERE Type = ?";
-			else if (category.equals("lamp"))
-				query = "SELECT * FROM Lamp WHERE Type = ?";
-			else if (category.equals("filing"))
-				query = "SELECT * FROM Filing WHERE Type = ?";
+//			if (category.equals("chair"))
+//				query = "SELECT * FROM Chair WHERE Type = ?";
+//			else if (category.equals("desk"))
+//				query = "SELECT * FROM Desk WHERE Type = ?";
+//			else if (category.equals("lamp"))
+//				query = "SELECT * FROM Lamp WHERE Type = ?";
+//			else if (category.equals("filing"))
+			query = "SELECT * FROM $tableName WHERE Type = ?";
+			query = query.replace("$tableName", category);
 			PreparedStatement myStmt = dbConnect.prepareStatement(query);
-			// myStmt.setString(1, category);
 			myStmt.setString(1, type);
 			results = myStmt.executeQuery();
 			// while (results.next()) {
 			// System.out.println("Print results: " + results.getString("id"));
 			// }
+			//myStmt.close();
 		} catch (SQLException ex) {
 			ex.printStackTrace();
 		}
