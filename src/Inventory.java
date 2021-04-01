@@ -87,7 +87,10 @@ public class Inventory {
 			e.printStackTrace();
 		}
 	}
-
+	/*
+	* close is a method that has no arguments and no return type. 
+	* close closes the connection to the SQL database.
+	*/
 	public void close() {
 		try {
 			results.close();
@@ -121,7 +124,7 @@ public class Inventory {
 
 	/*
 	 * toTitleCase is a method that takes one String as an argument, converts it to
-	 * title case and returns it
+	 * title case and returns it 
 	 */
 	public String toTitleCase(String x) {
 		StringBuilder titleCase = new StringBuilder(x.length());
