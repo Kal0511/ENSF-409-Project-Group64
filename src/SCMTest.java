@@ -1,14 +1,29 @@
-import static org.junit.Assert.*;
+import org.junit.Test;
 
-import org.junit.*;
-
-import java.io.*;
-import java.util.*;
-import java.sql.*;
-
-import org.junit.contrib.java.lang.system.ExpectedSystemExit;
+import static org.junit.Assert.assertTrue;
 
 public class SCMTest {
+
+    @Test
+    // Constructor created with zero arguments
+    // addDataElement() with two arguments
+    // Use getDataElements() to retrieve values
+    public void testAnalyzeEntry() {
+        Inventory inventory = new Inventory();
+
+        String testEntry = "executive chair, 3";
+
+        inventory.analyzeEntry(testEntry);
+        // Retrieve list, convert to array, see if it matches
+        String expectedCategory = "chair";
+        String expectedType = "executive";
+        int expectedAmount = 3;
+        assertTrue("expected category does not match actual category", expectedCategory.equals(inventory.category));
+        assertTrue("expected type does not match actual type", expectedType.equals(inventory.type));
+        assertTrue("expected amount does not match actual amount", expectedAmount == inventory.amount);
+
+    }
+
 
 //    @Test
 //    // Constructor created with zero arguments
@@ -28,51 +43,23 @@ public class SCMTest {
 //                Arrays.equals(x, result));
 //    }
 
-    @Test
-    // Constructor created with zero arguments
-    // addDataElement() with one argument
-    // Use asSringArray() to retrieve values
-    public void testRequestTooManyItems() throws SQLException {
-        Inventory inventory = new Inventory();
-
-        // Create a user request
-        String testEntry = "executive chair, 100";
-        String resultItems = null;
-
-        // Try using testEntry as input check that there is no possible combination of items to fill request
-        inventory.analyzeEntry(testEntry);
-        inventory.pullData();
-        inventory.evaluateRequest();
-        assertTrue("Requesting too many items did not return an empty item list", testEntry.equals(resultItems));
-    }
-
 //    @Test
 //    // Constructor created with zero arguments
-//    // addDataElement() with two arguments
-//    // Use getDataElements() to retrieve values
-//    public void testConstructor0Add2GetDataElements() {
-//        ENSFStorage storage = new ENSFStorage();
+//    // addDataElement() with one argument
+//    // Use asStringArray() to retrieve values
+//    public void testRequestTooManyItems() throws SQLException {
+//        Inventory inventory = new Inventory();
 //
-//        // Create a list of Strings, then make an array of what is expected
-//        String line1 = "Whan that Aprill with his shoures soote";
-//        String line2 = "The droghte of March hath perced to the roote,";
-//        String line3 = "And bathed every veyne in swich licour";
-//        String line1alt = "When April with its sweet-smelling showers";
-//        String line2alt = "Has pierced the drought of March to the root,";
-//        String[] expected = {line1alt, line2alt, line3};
+//        // Create a user request
+//        String testEntry = "executive chair, 100";
 //
-//        // Add three lines sequentially, then overwrite two of them
-//        storage.addDataElement(line1);
-//        storage.addDataElement(line2);
-//        storage.addDataElement(line3);
-//        storage.addDataElement(line1alt, 0);
-//        storage.addDataElement(line2alt, 1);
-//
-//        // Retrieve list, convert to array, see if it matches
-//        LinkedList<String> data = storage.getDataElements();
-//        String[] dataArray = data.toArray(new String[data.size()]);
-//        assertTrue("Adding data elements and retrieving complete list with getDataElements failed", Arrays.equals(expected, dataArray));
+//        // Try using testEntry as input check that there is no possible combination of items to fill request
+//        inventory.analyzeEntry(testEntry);
+//        inventory.pullData();
+//        inventory.evaluateRequest();
+//        assertNull("Requesting too many items did not return an empty item list", inventory.items);
 //    }
+
 //
 //    @Test
 //    // Constructor created with one argument
