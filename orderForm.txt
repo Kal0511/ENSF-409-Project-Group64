@@ -4,9 +4,10 @@ Faculty Name:
 Contact:
 Date:
 
-Original Request: desk lamp, 1
+Original Request: traditional desk, 1
 
 Itmes Ordered:
-ID: L564
+ID: D4231
+ID: D9352
 
-Total Price: $20
+Total Price: $125
