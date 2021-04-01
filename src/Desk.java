@@ -46,15 +46,15 @@ public class Desk {
 	public Desk addItem(Desk add) {
 		Desk temp = new Desk(null, 	numOfLegs, numOfTop, numOfDrawer, totalPrice);
 		temp.IDs = new ArrayList<String>(IDs);
-		if (IDs.contains(add.IDs.get(0))) {
-			return temp;
-		}
+//		if (IDs.contains(add.IDs.get(0))) {
+//			return temp;
+//		}
 		temp.IDs.add(add.IDs.get(0));
 		temp.numOfLegs += add.numOfLegs;
 		temp.numOfTop += add.numOfTop;
 		temp.numOfDrawer += add.numOfDrawer;
 		temp.totalPrice += add.totalPrice;
-		temp.completeSet = Math.min(numOfLegs, Math.min(numOfTop, numOfDrawer));
+		temp.completeSet = Math.min(temp.numOfLegs, Math.min(temp.numOfTop, temp.numOfDrawer));
 		return temp;
 	}
 
