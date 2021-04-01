@@ -4,9 +4,9 @@ Faculty Name:
 Contact:
 Date:
 
-Original Request: Adjustable desk, 1
+Original Request: desk lamp, 1
 
 Itmes Ordered:
-ID: null
+ID: L564
 
-Total Price: $0
+Total Price: $20

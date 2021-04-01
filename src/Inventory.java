@@ -87,10 +87,11 @@ public class Inventory {
 			e.printStackTrace();
 		}
 	}
+
 	/*
-	* close is a method that has no arguments and no return type. 
-	* close closes the connection to the SQL database.
-	*/
+	 * close is a method that has no arguments and no return type. close closes the
+	 * connection to the SQL database.
+	 */
 	public void close() {
 		try {
 			results.close();
@@ -124,7 +125,7 @@ public class Inventory {
 
 	/*
 	 * toTitleCase is a method that takes one String as an argument, converts it to
-	 * title case and returns it 
+	 * title case and returns it
 	 */
 	public String toTitleCase(String x) {
 		StringBuilder titleCase = new StringBuilder(x.length());
@@ -164,7 +165,7 @@ public class Inventory {
 			// while (results.next()) {
 			// System.out.println("Print results: " + results.getString("id"));
 			// }
-			//myStmt.close();
+			// myStmt.close();
 		} catch (SQLException ex) {
 			ex.printStackTrace();
 		}
@@ -270,14 +271,15 @@ public class Inventory {
 		String query = null;
 		PreparedStatement myStmt = null;
 		try {
-			if (category.equals("chair"))
-				query = "DELETE FROM chair WHERE ID = ?";
-			else if (category.equals("desk"))
-				query = "DELETE FROM desk WHERE ID = ?";
-			else if (category.equals("lamp"))
-				query = "DELETE FROM lamp WHERE ID = ?";
-			else if (category.equals("filing"))
-				query = "DELETE FROM filing WHERE ID = ?";
+//			if (category.equals("chair"))
+//				query = "DELETE FROM chair WHERE ID = ?";
+//			else if (category.equals("desk"))
+//				query = "DELETE FROM desk WHERE ID = ?";
+//			else if (category.equals("lamp"))
+//				query = "DELETE FROM lamp WHERE ID = ?";
+//			else if (category.equals("filing"))
+			query = "DELETE FROM $tableName WHERE ID = ?";
+			query = query.replace("$tableName", category);
 			for (int i = 0; i < items.size(); i++) {
 				myStmt = dbConnect.prepareStatement(query);
 				myStmt.setString(1, items.get(i));
@@ -295,7 +297,7 @@ public class Inventory {
 	 * returns nothing
 	 */
 	public void checkIfOrderFilled() {
-		if (items.equals(null)) {
+		if (items.get(0) == null) {
 			String output = "";
 			output += "Order cannot be filled based on current inventory. Suggested manufacturers are ";
 			if (category.equals("chair"))
