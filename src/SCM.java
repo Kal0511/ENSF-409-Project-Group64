@@ -11,7 +11,7 @@ public class SCM {
         test.initializeConnection();
         test.getUserRequest();
         test.pullData();
-        test.evaluvateRequest();
+        test.evaluateRequest();
         test.checkIfOrderFilled();
         test.updateDatabase();
         test.write();
