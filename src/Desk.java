@@ -6,128 +6,126 @@ import java.util.ArrayList;
  */
 
 public class Desk {
-    private ArrayList<String> IDs;
-    private int numOfLegs;
-    private int numOfTop;
-    private int numOfDrawer;
-    private int totalPrice;
-    private int completeSet;
+	private ArrayList<String> IDs;
+	private int numOfLegs;
+	private int numOfTop;
+	private int numOfDrawer;
+	private int totalPrice;
+	private int completeSet;
 
-    public ArrayList<String> getIDs() {
-        return this.IDs;
-    }
+	public ArrayList<String> getIDs() {
+		return this.IDs;
+	}
 
-    public int getLegs() {
-        return this.numOfLegs;
-    }
+	public int getLegs() {
+		return this.numOfLegs;
+	}
 
-    public int getTop() {
-        return this.numOfTop;
-    }
+	public int getTop() {
+		return this.numOfTop;
+	}
 
-    public int getDrawer() {
-        return this.numOfDrawer;
-    }
+	public int getDrawer() {
+		return this.numOfDrawer;
+	}
 
-    public int getPrice() {
-        return this.totalPrice;
-    }
+	public int getPrice() {
+		return this.totalPrice;
+	}
 
-    /**
-     * Constructor.
-     *
-     * @param _ID
-     * @param _legs
-     * @param _top
-     * @param _drawer
-     * @param _price
-     */
-    public Desk(String _ID, int _legs, int _top, int _drawer, int _price) {
-        this.IDs = new ArrayList<>();
-        this.IDs.add(_ID);
-        this.numOfLegs = _legs;
-        this.numOfTop = _top;
-        this.numOfDrawer = _drawer;
-        this.totalPrice = _price;
-        this.completeSet = Math.min(numOfLegs, Math.min(numOfTop, numOfDrawer));
-    }
+	/**
+	 * Constructor.
+	 *
+	 * @param _ID
+	 * @param _legs
+	 * @param _top
+	 * @param _drawer
+	 * @param _price
+	 */
+	public Desk(String _ID, int _legs, int _top, int _drawer, int _price) {
+		this.IDs = new ArrayList<>();
+		this.IDs.add(_ID);
+		this.numOfLegs = _legs;
+		this.numOfTop = _top;
+		this.numOfDrawer = _drawer;
+		this.totalPrice = _price;
+		this.completeSet = Math.min(numOfLegs, Math.min(numOfTop, numOfDrawer));
+	}
 
-    /**
-     * simply adds piece of completed item order to requested item order.
-     *
-     * @param add
-     * @return
-     */
-    public Desk addItem(Desk add) {
-        Desk temp = new Desk(null, numOfLegs, numOfTop, numOfDrawer, totalPrice);
-        temp.IDs = new ArrayList<>(IDs);
-//		if (IDs.contains(add.IDs.get(0))) {
-//			return temp;
-//		}
-        temp.IDs.add(add.IDs.get(0));
-        temp.numOfLegs += add.numOfLegs;
-        temp.numOfTop += add.numOfTop;
-        temp.numOfDrawer += add.numOfDrawer;
-        temp.totalPrice += add.totalPrice;
-        temp.completeSet = Math.min(temp.numOfLegs, Math.min(temp.numOfTop, temp.numOfDrawer));
-        return temp;
-    }
+	/**
+	 * simply adds piece of completed item order to requested item order.
+	 *
+	 * @param add
+	 * @return
+	 */
+	public Desk addItem(Desk add) {
+		Desk temp = new Desk(null, numOfLegs, numOfTop, numOfDrawer, totalPrice);
+		temp.IDs = new ArrayList<>(IDs);
+		temp.IDs.add(add.IDs.get(0));
+		temp.numOfLegs += add.numOfLegs;
+		temp.numOfTop += add.numOfTop;
+		temp.numOfDrawer += add.numOfDrawer;
+		temp.totalPrice += add.totalPrice;
+		temp.completeSet = Math.min(temp.numOfLegs, Math.min(temp.numOfTop, temp.numOfDrawer));
+		return temp;
+	}
 
-    /**
-     * This method does initial checking of user input and calls cheapestGroupRecursion() if user requested
-     * a valid number of items.
-     *
-     * @param list
-     * @param requestSize
-     * @return
-     */
-    public static Desk processRequest(ArrayList<Desk> list, int requestSize) {
-        if (requestSize == 0) {
-            return null;
-        }
-        Desk cheapest = null;
-        while (list.size() != 0) {
-            Desk curr = list.get(0);
-            list.remove(0);
-            cheapest = cheapestGroupRecursion(new ArrayList<>(list), curr, cheapest, requestSize);
-        }
-        if (cheapest == null) {
-            return new Desk(null, 0, 0, 0, 0);
-        }
-        return cheapest;
-    }
+	/**
+	 * This method does initial checking of user input and calls
+	 * cheapestGroupRecursion() if user requested a valid number of items.
+	 *
+	 * @param list
+	 * @param requestSize
+	 * @return
+	 */
+	public static Desk processRequest(ArrayList<Desk> list, int requestSize) {
+		if (requestSize == 0) {
+			return null;
+		}
+		Desk cheapest = null;
+		while (list.size() != 0) {
+			Desk curr = list.get(0);
+			list.remove(0);
+			cheapest = cheapestGroupRecursion(new ArrayList<>(list), curr, cheapest, requestSize);
+		}
+		if (cheapest == null) {
+			return new Desk(null, 0, 0, 0, 0);
+		}
+		return cheapest;
+	}
 
-    /**
-     * This method iterates through possible combinations of pieces and determines which combination is the cheapest.
-     * It returns the cheapest combination of pieces, which is the complete item.
-     *
-     * @param list
-     * @param curr
-     * @param best
-     * @param requestSize
-     * @return
-     */
-    public static Desk cheapestGroupRecursion(ArrayList<Desk> list, Desk curr, Desk best, int requestSize) {
-        if (curr.completeSet >= requestSize) {
-            if (best == null) {
-                best = curr;
-                return best;
-            }
-            if (curr.totalPrice < best.totalPrice) {
-                best = curr;
-                return best;
-            }
-        }
-        if (best != null) {
-            if (curr.totalPrice > best.totalPrice) {
-                return best;
-            }
-        }
-        while (list.size() != 0) {
-            Desk temp = curr.addItem(list.get(0));
-            list.remove(0);
-            best = cheapestGroupRecursion(new ArrayList<>(list), temp, best, requestSize);
-        }
-        return best;
-    }
+	/**
+	 * This method iterates through possible combinations of pieces and determines
+	 * which combination is the cheapest. It returns the cheapest combination of
+	 * pieces, which is the complete item.
+	 *
+	 * @param list
+	 * @param curr
+	 * @param best
+	 * @param requestSize
+	 * @return
+	 */
+	public static Desk cheapestGroupRecursion(ArrayList<Desk> list, Desk curr, Desk best, int requestSize) {
+		if (curr.completeSet >= requestSize) {
+			if (best == null) {
+				best = curr;
+				return best;
+			}
+			if (curr.totalPrice < best.totalPrice) {
+				best = curr;
+				return best;
+			}
+		}
+		if (best != null) {
+			if (curr.totalPrice > best.totalPrice) {
+				return best;
+			}
+		}
+		while (list.size() != 0) {
+			Desk temp = curr.addItem(list.get(0));
+			list.remove(0);
+			best = cheapestGroupRecursion(new ArrayList<>(list), temp, best, requestSize);
+		}
+		return best;
+	}
 }
