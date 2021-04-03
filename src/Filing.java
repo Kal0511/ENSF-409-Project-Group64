@@ -1,13 +1,21 @@
 import java.util.ArrayList;
 
-/**
- * Filing is a class that determines the cheapest valid combination of all
- * filings of the specified type to fulfill the requested order.
- */
-public class Filing extends Furniture{
+/*
+* Filing is a class that determines the cheapest valid combination of all lamps 
+* of the specified type to fulfill the order. 
+*/
+
+public class Filing {
+	private ArrayList<String> IDs;
 	private int numOfRails;
 	private int numOfCabinet;
 	private int numOfDrawer;
+	private int totalPrice;
+	private int completeSet;
+	
+	public ArrayList<String> getIDs() {
+		return this.IDs;
+	}
 
 	public int getRails() {
 		return this.numOfRails;
@@ -16,53 +24,41 @@ public class Filing extends Furniture{
 	public int getCabinet() {
 		return this.numOfCabinet;
 	}
-
+	
 	public int getDrawer() {
 		return this.numOfDrawer;
 	}
 
-	/**
-	 * Constructor.
-	 *
-	 * @param _ID
-	 * @param _rails
-	 * @param _cabinet
-	 * @param _drawer
-	 * @param _price
-	 */
+	public int getPrice() {
+		return this.totalPrice;
+	}
+
 	public Filing(String _ID, int _rails, int _cabinet, int _drawer, int _price) {
-		super(_ID, _price, Math.min(_cabinet, Math.min(_rails, _drawer)));
+		this.IDs = new ArrayList<String>();
+		this.IDs.add(_ID);
 		this.numOfRails = _rails;
 		this.numOfCabinet = _cabinet;
 		this.numOfDrawer = _drawer;
+		this.totalPrice = _price;
+		this.completeSet = Math.min(numOfCabinet, Math.min(numOfRails, numOfDrawer));
 	}
-
-	/**
-	 * simply adds piece of completed item order to requested item order.
-	 *
-	 * @param add
-	 * @return
-	 */
-	public Filing addItem(Filing add) {
-		Filing temp = new Filing(null, numOfRails, numOfCabinet, numOfDrawer, totalPrice);
-		temp.IDs = new ArrayList<>(IDs);
-		temp.IDs.add(add.IDs.get(0));
-		temp.numOfRails += add.numOfRails;
-		temp.numOfCabinet += add.numOfCabinet;
-		temp.numOfDrawer += add.numOfDrawer;
-		temp.totalPrice += add.totalPrice;
-		temp.completeSet = Math.min(temp.numOfCabinet, Math.min(temp.numOfRails, temp.numOfDrawer));
-		return temp;
+	
+	public void addItem(Filing add) {
+		if (IDs.contains(add.IDs.get(0))) {
+			return;
+		}
+		IDs.add(add.IDs.get(0));
+		numOfRails += add.numOfRails;
+		numOfCabinet += add.numOfCabinet;
+		numOfDrawer += add.numOfDrawer;
+		totalPrice += add.totalPrice;
+		completeSet = Math.min(numOfCabinet, Math.min(numOfRails, numOfDrawer));
 	}
-
-	/**
-	 * This method does initial checking of user input and calls
-	 * cheapestGroupRecursion() if user requested a valid number of items.
-	 *
-	 * @param list
-	 * @param requestSize
-	 * @return
-	 */
+    /*
+   * checkRequest takes in a linked list of String arrays and has no return type.
+   * method uses recursion to determine any possible valid combinations of filings 
+   * 
+   */
 	public static Filing processRequest(ArrayList<Filing> list, int requestSize) {
 		if (requestSize == 0) {
 			return null;
@@ -71,26 +67,19 @@ public class Filing extends Furniture{
 		while (list.size() != 0) {
 			Filing curr = list.get(0);
 			list.remove(0);
-			cheapest = cheapestGroupRecursion(new ArrayList<>(list), curr, cheapest, requestSize);
+			cheapest = cheapestGroupRecursion(new ArrayList<Filing>(list), curr, cheapest, requestSize);
 		}
-//		if (cheapest == null) {
-//			return null;
-//		}
-		//return new Furniture(cheapest.IDs,cheapest.totalPrice,cheapest.completeSet);
+		if(cheapest==null) {
+			return new Filing(null,  0,  0,  0,  0);
+		}
 		return cheapest;
 	}
-
-	/**
-	 * This method iterates through possible combinations of pieces and determines
-	 * which combination is the cheapest. It returns the cheapest combination of
-	 * pieces, which is the complete item.
-	 *
-	 * @param list
-	 * @param curr
-	 * @param best
-	 * @param requestSize
-	 * @return
-	 */
+    /*
+    *checkPrices is a method with no arguments and no return type.
+    * method goes through possible combinations and determines which one
+    * is the cheapest. It then updates the resulsts string to represent the
+    * combination the corresponds to that price.
+    */ 
 	public static Filing cheapestGroupRecursion(ArrayList<Filing> list, Filing curr, Filing best, int requestSize) {
 		if (curr.completeSet >= requestSize) {
 			if (best == null) {
@@ -108,9 +97,9 @@ public class Filing extends Furniture{
 			}
 		}
 		while (list.size() != 0) {
-			Filing temp = curr.addItem(list.get(0));
+			curr.addItem(list.get(0));
 			list.remove(0);
-			best = cheapestGroupRecursion(new ArrayList<>(list), temp, best, requestSize);
+			best = cheapestGroupRecursion(new ArrayList<Filing>(list), curr, best, requestSize);
 		}
 		return best;
 	}
