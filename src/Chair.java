@@ -4,18 +4,11 @@ import java.util.ArrayList;
  * Chair is a class that determines the cheapest valid combination of all chairs
  * of the specified type to fulfill the requested order.
  */
-public class Chair {
-	private ArrayList<String> IDs;
+public class Chair extends Furniture{
 	private int numOfLegs;
 	private int numOfArms;
 	private int numOfSeat;
 	private int numOfCushion;
-	private int totalPrice;
-	private int completeSet;
-
-	public ArrayList<String> getIDs() {
-		return this.IDs;
-	}
 
 	public int getLegs() {
 		return this.numOfLegs;
@@ -33,10 +26,6 @@ public class Chair {
 		return this.numOfCushion;
 	}
 
-	public int getPrice() {
-		return this.totalPrice;
-	}
-
 	/**
 	 * Constructor.
 	 *
@@ -48,14 +37,11 @@ public class Chair {
 	 * @param _price
 	 */
 	public Chair(String _ID, int _legs, int _arms, int _seat, int _cushion, int _price) {
-		this.IDs = new ArrayList<>();
-		this.IDs.add(_ID);
+		super(_ID, _price, Math.min(Math.min(_legs, _arms), Math.min(_seat, _cushion)));
 		this.numOfLegs = _legs;
 		this.numOfArms = _arms;
 		this.numOfSeat = _seat;
 		this.numOfCushion = _cushion;
-		this.totalPrice = _price;
-		this.completeSet = Math.min(Math.min(numOfLegs, numOfArms), Math.min(numOfSeat, numOfCushion));
 	}
 
 	/**
@@ -88,7 +74,7 @@ public class Chair {
 	 */
 	public static Chair processRequest(ArrayList<Chair> list, int requestSize) {
 		if (requestSize == 0) {
-			return new Chair(null, 0, 0, 0, 0, 0);
+			return null;
 		}
 		Chair cheapest = null;
 		while (list.size() != 0) {
@@ -96,9 +82,10 @@ public class Chair {
 			list.remove(0);
 			cheapest = cheapestGroupRecursion(new ArrayList<>(list), curr, cheapest, requestSize);
 		}
-		if (cheapest == null) {
-			return new Chair(null, 0, 0, 0, 0, 0);
-		}
+//		if (cheapest == null) {
+//			return null;
+//		}
+		//return new Furniture(cheapest.IDs, cheapest.totalPrice, cheapest.completeSet);
 		return cheapest;
 	}
 

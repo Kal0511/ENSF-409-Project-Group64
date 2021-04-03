@@ -5,17 +5,10 @@ import java.util.ArrayList;
  * of the specified type to fulfill the requested order.
  */
 
-public class Desk {
-	private ArrayList<String> IDs;
+public class Desk extends Furniture{
 	private int numOfLegs;
 	private int numOfTop;
 	private int numOfDrawer;
-	private int totalPrice;
-	private int completeSet;
-
-	public ArrayList<String> getIDs() {
-		return this.IDs;
-	}
 
 	public int getLegs() {
 		return this.numOfLegs;
@@ -29,10 +22,6 @@ public class Desk {
 		return this.numOfDrawer;
 	}
 
-	public int getPrice() {
-		return this.totalPrice;
-	}
-
 	/**
 	 * Constructor.
 	 *
@@ -43,13 +32,10 @@ public class Desk {
 	 * @param _price
 	 */
 	public Desk(String _ID, int _legs, int _top, int _drawer, int _price) {
-		this.IDs = new ArrayList<>();
-		this.IDs.add(_ID);
+super(_ID, _price, Math.min(_legs, Math.min(_top, _drawer)));
 		this.numOfLegs = _legs;
 		this.numOfTop = _top;
 		this.numOfDrawer = _drawer;
-		this.totalPrice = _price;
-		this.completeSet = Math.min(numOfLegs, Math.min(numOfTop, numOfDrawer));
 	}
 
 	/**
@@ -88,9 +74,10 @@ public class Desk {
 			list.remove(0);
 			cheapest = cheapestGroupRecursion(new ArrayList<>(list), curr, cheapest, requestSize);
 		}
-		if (cheapest == null) {
-			return new Desk(null, 0, 0, 0, 0);
-		}
+//		if (cheapest == null) {
+//			return null;
+//		}
+		//return new Furniture(cheapest.IDs,cheapest.totalPrice,cheapest.completeSet);
 		return cheapest;
 	}
 

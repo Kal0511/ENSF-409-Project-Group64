@@ -4,10 +4,10 @@ Faculty Name:
 Contact:
 Date:
 
-Original Request: traditional desk, 1
+Original Request: mesh chair, 1
 
 Itmes Ordered:
-ID: D4231
-ID: D9352
+ID: C0942
+ID: C9890
 
-Total Price: $125
+Total Price: $150

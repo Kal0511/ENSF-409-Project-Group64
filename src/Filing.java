@@ -4,17 +4,10 @@ import java.util.ArrayList;
  * Filing is a class that determines the cheapest valid combination of all
  * filings of the specified type to fulfill the requested order.
  */
-public class Filing {
-	private ArrayList<String> IDs;
+public class Filing extends Furniture{
 	private int numOfRails;
 	private int numOfCabinet;
 	private int numOfDrawer;
-	private int totalPrice;
-	private int completeSet;
-
-	public ArrayList<String> getIDs() {
-		return this.IDs;
-	}
 
 	public int getRails() {
 		return this.numOfRails;
@@ -28,10 +21,6 @@ public class Filing {
 		return this.numOfDrawer;
 	}
 
-	public int getPrice() {
-		return this.totalPrice;
-	}
-
 	/**
 	 * Constructor.
 	 *
@@ -42,13 +31,10 @@ public class Filing {
 	 * @param _price
 	 */
 	public Filing(String _ID, int _rails, int _cabinet, int _drawer, int _price) {
-		this.IDs = new ArrayList<>();
-		this.IDs.add(_ID);
+		super(_ID, _price, Math.min(_cabinet, Math.min(_rails, _drawer)));
 		this.numOfRails = _rails;
 		this.numOfCabinet = _cabinet;
 		this.numOfDrawer = _drawer;
-		this.totalPrice = _price;
-		this.completeSet = Math.min(this.numOfCabinet, Math.min(this.numOfRails, this.numOfDrawer));
 	}
 
 	/**
@@ -79,7 +65,7 @@ public class Filing {
 	 */
 	public static Filing processRequest(ArrayList<Filing> list, int requestSize) {
 		if (requestSize == 0) {
-			return new Filing(null, 0, 0, 0, 0);
+			return null;
 		}
 		Filing cheapest = null;
 		while (list.size() != 0) {
@@ -87,9 +73,10 @@ public class Filing {
 			list.remove(0);
 			cheapest = cheapestGroupRecursion(new ArrayList<>(list), curr, cheapest, requestSize);
 		}
-		if (cheapest == null) {
-			return new Filing(null, 0, 0, 0, 0);
-		}
+//		if (cheapest == null) {
+//			return null;
+//		}
+		//return new Furniture(cheapest.IDs,cheapest.totalPrice,cheapest.completeSet);
 		return cheapest;
 	}
 

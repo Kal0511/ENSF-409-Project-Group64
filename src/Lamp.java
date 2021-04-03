@@ -4,16 +4,9 @@ import java.util.ArrayList;
  * Lamp is a class that determines the cheapest valid combination of all lamps
  * of the specified type to fulfill the requested order.
  */
-public class Lamp {
-	private ArrayList<String> IDs;
+public class Lamp extends Furniture{
 	private int numOfBase;
 	private int numOfBulb;
-	private int totalPrice;
-	private int completeSet;
-
-	public ArrayList<String> getIDs() {
-		return this.IDs;
-	}
 
 	public int getBase() {
 		return this.numOfBase;
@@ -21,10 +14,6 @@ public class Lamp {
 
 	public int getBulb() {
 		return this.numOfBulb;
-	}
-
-	public int getPrice() {
-		return this.totalPrice;
 	}
 
 	/**
@@ -36,12 +25,9 @@ public class Lamp {
 	 * @param _price
 	 */
 	public Lamp(String _ID, int _base, int _bulb, int _price) {
-		this.IDs = new ArrayList<>();
-		this.IDs.add(_ID);
+		super(_ID, _price, Math.min(_base, _bulb));
 		this.numOfBase = _base;
 		this.numOfBulb = _bulb;
-		this.totalPrice = _price;
-		this.completeSet = Math.min(numOfBase, numOfBulb);
 	}
 
 	/**
@@ -52,7 +38,7 @@ public class Lamp {
 	 */
 	public Lamp addItem(Lamp add) {
 		Lamp temp = new Lamp(null, numOfBase, numOfBulb, totalPrice);
-		temp.IDs = new ArrayList<>(IDs);
+		temp.IDs = new ArrayList<String>(IDs);
 		temp.IDs.add(add.IDs.get(0));
 		temp.numOfBase += add.numOfBase;
 		temp.numOfBulb += add.numOfBulb;
@@ -71,7 +57,7 @@ public class Lamp {
 	 */
 	public static Lamp processRequest(ArrayList<Lamp> list, int requestSize) {
 		if (requestSize == 0) {
-			return new Lamp(null, 0, 0, 0);
+			return null;
 		}
 		Lamp cheapest = null;
 		while (list.size() != 0) {
@@ -79,9 +65,10 @@ public class Lamp {
 			list.remove(0);
 			cheapest = cheapestGroupRecursion(new ArrayList<>(list), curr, cheapest, requestSize);
 		}
-		if (cheapest == null) {
-			return new Lamp(null, 0, 0, 0);
-		}
+//		if (cheapest == null) {
+//			return null;
+//		}
+//		return new Furniture(cheapest.IDs, cheapest.totalPrice, cheapest.completeSet);
 		return cheapest;
 	}
 

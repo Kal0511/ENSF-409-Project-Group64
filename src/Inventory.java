@@ -19,13 +19,12 @@ public class Inventory {
 	private Connection dbConnect;
 	private ResultSet results;
 
-	protected String category;
-	protected String type;
-	protected int amount;
+	private String category;
+	private String type;
+	private int amount;
 
 	private String entry;
-	protected ArrayList<String> items;
-	private int itemPrice;
+	private Furniture item;
 
 	// possible manufacturers for each category of furniture
 	private final String[] possibleManufacturersChair = { "002", "003", "004", "005" };
@@ -180,9 +179,7 @@ public class Inventory {
 				list.add(temp);
 			}
 			findManuID(possibleManufacturersChair);
-			Chair best = Chair.processRequest(list, amount);
-			this.items = best.getIDs();
-			this.itemPrice = best.getPrice();
+			item = Chair.processRequest(list, amount);
 
 			break;
 		}
@@ -195,13 +192,7 @@ public class Inventory {
 				list.add(temp);
 			}
 			findManuID(possibleManufacturersDesk);
-			Desk best = Desk.processRequest(list, amount);
-			if (best != null) {
-				this.items = best.getIDs();
-			}
-			if (best != null) {
-				this.itemPrice = best.getPrice();
-			}
+			item = Desk.processRequest(list, amount);
 			break;
 		}
 		case "filing": {
@@ -213,9 +204,8 @@ public class Inventory {
 				list.add(temp);
 			}
 			findManuID(possibleManufacturersFiling);
-			Filing best = Filing.processRequest(list, amount);
-			this.items = best.getIDs();
-			this.itemPrice = best.getPrice();
+			item = Filing.processRequest(list, amount);
+
 			break;
 		}
 		case "lamp": {
@@ -226,9 +216,7 @@ public class Inventory {
 				list.add(temp);
 			}
 			findManuID(possibleManufacturersLamp);
-			Lamp best = Lamp.processRequest(list, amount);
-			this.items = best.getIDs();
-			this.itemPrice = best.getPrice();
+			item = Lamp.processRequest(list, amount);
 			break;
 		}
 		}
@@ -262,7 +250,7 @@ public class Inventory {
 		try {
 			query = "DELETE FROM $tableName WHERE ID = ?";
 			query = query.replace("$tableName", category);
-			for (String item : items) {
+			for (String item : item.IDs) {
 				myStmt = dbConnect.prepareStatement(query);
 				myStmt.setString(1, item);
 				myStmt.execute();
@@ -280,7 +268,7 @@ public class Inventory {
 	 * fulfilled it outputs a message and exits.
 	 */
 	public void checkIfOrderFilled() {
-		if (items.get(0) == null) {
+		if (item == null) {
 			StringBuilder output = new StringBuilder();
 			output.append("Order cannot be filled based on current inventory. Suggested manufacturers are ");
 			if (category.equals("chair"))
@@ -313,12 +301,12 @@ public class Inventory {
 	 */
 	public void write() {
 		System.out.print("Output: Purchase ");
-		for (int i = 0; i < items.size(); i++) {
-			System.out.print(items.get(i));
-			if (i != items.size() - 1)
+		for (int i = 0; i < item.IDs.size(); i++) {
+			System.out.print(item.IDs.get(i));
+			if (i != item.IDs.size() - 1)
 				System.out.print(" and ");
 		}
-		System.out.print(" for $" + itemPrice + "\n");
+		System.out.print(" for $" + item.getPrice() + "\n");
 		try {
 			FileWriter fileWriter = new FileWriter("orderForm.txt");
 			PrintWriter fo = new PrintWriter(fileWriter);
@@ -328,9 +316,9 @@ public class Inventory {
 			fo.write("Date:\n");
 			fo.write("\nOriginal Request: " + entry + "\n");
 			fo.write("\nItmes Ordered:\n");
-			for (String item : items)
+			for (String item : item.IDs)
 				fo.write("ID: " + item + "\n");
-			fo.write("\nTotal Price: $" + itemPrice);
+			fo.write("\nTotal Price: $" + item.getPrice());
 			fo.close();
 		} catch (Exception e) {
 			e.printStackTrace();
