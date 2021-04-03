@@ -118,21 +118,24 @@ public class SCMTest {
     
     @Test
     // tests if evaluate request chooses cheapest combination of pieces for requested item
-    public void testInvalidType() throws SQLException {
+    public void testBuyBack() throws SQLException {
         Inventory inventory = new Inventory();
        
-        
+        inventory.addChair("C9200", "Test2", "Y", "N", "N", "N",
+                50, "005");
+        inventory.addChair("C9300", "Test2", "Y", "Y", "Y", "Y",
+                50, "005");
 
-        String testEntry = "noo chair, 1";
-
-      
-        exit.expectSystemExitWithStatus(1);
+        String testEntry = "mesh chair, 1";
 
         // Try using testEntry as input
         inventory.analyzeEntry(testEntry);
         inventory.pullData();
         inventory.evaluateRequest();
-
+        
+       
+        
+        assertTrue("Buyback option works", inventory.exists("C9300","Chair"));
         // removing added chairs from database for testing simplicity
 
     }
