@@ -1,13 +1,13 @@
 import org.junit.Test;
 
-import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.*;
+
+import java.util.*;
+import java.sql.*;
 
 public class SCMTest {
 
     @Test
-    // Constructor created with zero arguments
-    // addDataElement() with two arguments
-    // Use getDataElements() to retrieve values
     public void testAnalyzeEntry() {
         Inventory inventory = new Inventory();
 
@@ -18,61 +18,67 @@ public class SCMTest {
         String expectedCategory = "chair";
         String expectedType = "executive";
         int expectedAmount = 3;
-        assertTrue("expected category does not match actual category", expectedCategory.equals(inventory.category));
-        assertTrue("expected type does not match actual type", expectedType.equals(inventory.type));
-        assertTrue("expected amount does not match actual amount", expectedAmount == inventory.amount);
+        assertTrue("expected category does not match actual category", expectedCategory.equals(inventory.getCategory()));
+        assertTrue("expected type does not match actual type", expectedType.equals(inventory.getType()));
+        assertTrue("expected amount does not match actual amount", expectedAmount == inventory.getAmount());
 
     }
 
+    @Test
+    public void testfindManuID() throws SQLException {
+        Inventory inventory = new Inventory();
 
-//    @Test
-//    // Constructor created with zero arguments
-//    // addDataElement() with one argument
-//    // Use getDataElements() to retrieve values
-//    public void testfindManuID() throws SQLException {
-//        Inventory inventory = new Inventory();
-//
-//        // set string array to all Manufacturer IDs
-//        String[] x = {"001", "002", "003", "004", "005"};
-//        String[] result = {"Academic Desks", "Office Furnishings", "Chairs R Us", "Furniture Goods",
-//                "Fine Office Supplies"};
-//
-//        // use findManuID to test if it does what is desired
-//        inventory.findManuID(x);
-//        assertTrue("Adding data elements and retrieving complete list with getDataElements failed",
-//                Arrays.equals(x, result));
-//    }
+        // set string array to all Manufacturer IDs
+        String[] x = {"001", "002", "003", "004", "005"};
+        String[] result = {"Academic Desks", "Office Furnishings", "Chairs R Us", "Furniture Goods",
+                "Fine Office Supplies"};
 
-//    @Test
-//    // Constructor created with zero arguments
-//    // addDataElement() with one argument
-//    // Use asStringArray() to retrieve values
-//    public void testRequestTooManyItems() throws SQLException {
-//        Inventory inventory = new Inventory();
-//
-//        // Create a user request
-//        String testEntry = "executive chair, 100";
-//
-//        // Try using testEntry as input check that there is no possible combination of items to fill request
-//        inventory.analyzeEntry(testEntry);
-//        inventory.pullData();
-//        inventory.evaluateRequest();
-//        assertNull("Requesting too many items did not return an empty item list", inventory.items);
-//    }
+        // use findManuID to test if it does what is desired
+        inventory.findManuID(x);
+        assertTrue("Adding data elements and retrieving complete list with getDataElements failed",
+                Arrays.equals(x, result));
+    }
 
-//
-//    @Test
-//    // Constructor created with one argument
-//    // Check if fileName is set (including data dir) using getFileName()
-//    public void testConstructor1getFileName() {
-//        String fn = "thefilename";
-//        String expected = addPath(fn);
-//        ENSFStorage storage = new ENSFStorage(fn);
-//
-//        String got = storage.getFileName();
-//        assertEquals("FileName wasn't correctly stored", expected, got);
-//    }
-//
+    @Test
+    public void testRequestTooManyItems() throws SQLException {
+        Inventory inventory = new Inventory();
+
+        // Create a user request
+        String testEntry = "executive chair, 100";
+        // Try using testEntry as input check that there is no possible combination of items to fill request
+        inventory.analyzeEntry(testEntry);
+        inventory.pullData();
+        inventory.evaluateRequest();
+        assertNull("Requesting too many items did not return an empty item list", inventory.getItem());
+    }
+
+    @Test
+    // tests if evaluate requests
+    //
+    public void testEvaluateRequest1() throws SQLException {
+        Inventory inventory = new Inventory();
+        // Create a user request
+        inventory.addChair("C9000", "Mesh", "Y", "Y", "Y", "N", 20, "005");
+        inventory.addChair("C9100", "Mesh", "N", "Y", "Y", "Y", 20, "005");
+        inventory.addChair("C9200", "Mesh", "Y", "N", "N", "Y", 20, "005");
+
+        String testEntry = "mesh chair, 2";
+
+        ArrayList<String> expected = new ArrayList<String>();
+        expected.add("C9000");
+        expected.add("C9100");
+        expected.add("C9200");
+
+        // Try using testEntry as input check that there is no possible combination of items to fill request
+        inventory.analyzeEntry(testEntry);
+        inventory.pullData();
+        inventory.evaluateRequest();
+        ArrayList<String> got = inventory.getItem().IDs;
+
+        assertEquals("Evaluate request was incorrect", expected, got);
+        inventory.updateDatabase();
+    }
+
 //    @Test
 //    // Constructor created with one argument
 //    // Use setFileName, which should replace the stored value
@@ -359,3 +365,4 @@ public class SCMTest {
 //    }
 //
 }
+
