@@ -1,6 +1,6 @@
 import java.util.ArrayList;
 
-/*
+/**
 * Furniture is a parent class that contains
 * variables common to all different categories
 * of furniture.
