@@ -324,4 +324,30 @@ public class Inventory {
 			e.printStackTrace();
 		}
 	}
+	
+	public void addChair(String ID, String type, String legs, String arms, String seat, String cushion, int price, 
+                         String ManuID) {
+        String query;
+        PreparedStatement myStmt;
+        try {
+            query = "INSERT INTO CHAIR (ID, Type, Legs, Arms, Seat, Cushion, Price, ManuID) " +
+                    "VALUES (?, ?, ?, ?, ?, ?, ?, ?)";
+            myStmt = dbConnect.prepareStatement(query);
+            myStmt.setString(1, ID);
+            myStmt.setString(2, type);
+            myStmt.setString(3, legs);
+            myStmt.setString(4, arms);
+            myStmt.setString(5, seat);
+            myStmt.setString(6, cushion);
+            myStmt.setInt(7, price);
+            myStmt.setString(8, ManuID);
+            myStmt.executeUpdate();
+            myStmt.close();
+            if (myStmt != null) {
+                myStmt.close();
+            }
+        } catch (SQLException ex) {
+            ex.printStackTrace();
+        }
+    }
 }
