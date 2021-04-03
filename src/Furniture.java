@@ -11,6 +11,9 @@ public class Furniture {
 	protected int completeSet;
 	/** 
 	*Constructor
+	* @param _ID
+	* @param _price
+	* @param _set
 	*/
 	public Furniture(String _ID, int _price, int set) {
 		this.IDs = new ArrayList<>();
@@ -18,13 +21,18 @@ public class Furniture {
 		this.totalPrice = _price;
 		this.completeSet = set;
 	}
-	
+	/** 
+	*Constructor
+	* @param _IDs
+	* @param _price
+	* @param _set
+	*/
 	public Furniture(ArrayList<String> _IDs, int _price, int set) {
 		this.IDs = _IDs;
 		this.totalPrice = _price;
 		this.completeSet = set;
 	}
-
+	
 	public ArrayList<String> getIDs() {
 		return this.IDs;
 	}
