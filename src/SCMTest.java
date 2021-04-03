@@ -1,4 +1,4 @@
-import org.junit.Test;
+import org.junit.*;
 
 import static org.junit.Assert.*;
 
@@ -115,6 +115,28 @@ public class SCMTest {
         inventory.evaluateRequest();
         inventory.updateDatabase();
     }
+    
+    @Test
+    // tests if evaluate request chooses cheapest combination of pieces for requested item
+    public void testInvalidType() throws SQLException {
+        Inventory inventory = new Inventory();
+       
+        
+
+        String testEntry = "noo chair, 1";
+
+      
+        exit.expectSystemExitWithStatus(1);
+
+        // Try using testEntry as input
+        inventory.analyzeEntry(testEntry);
+        inventory.pullData();
+        inventory.evaluateRequest();
+
+        // removing added chairs from database for testing simplicity
+
+    }
+    
 }
 /* Tests involving expected System.exit()
  *  ExpectedSystemExit is provided by org.junit.contrib.java.lang.system.ExpectedSystemExit
