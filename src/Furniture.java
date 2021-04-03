@@ -10,7 +10,7 @@ public class Furniture {
 	protected int totalPrice;
 	protected int completeSet;
 	/** 
-	*Constructor
+	* Constructor.
 	* @param _ID
 	* @param _price
 	* @param _set
@@ -22,7 +22,7 @@ public class Furniture {
 		this.completeSet = set;
 	}
 	/** 
-	*Constructor
+	* Constructor.
 	* @param _IDs
 	* @param _price
 	* @param _set
