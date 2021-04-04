@@ -13,9 +13,9 @@ public class Furniture {
     /**
      * Constructor
      *
-     * @param _ID
-     * @param _price
-     * @param set
+     * @param _ID ID number of piece
+     * @param _price price of piece
+     * @param set number of items
      */
     public Furniture(String _ID, int _price, int set) {
         this.IDs = new ArrayList<>();
@@ -27,9 +27,9 @@ public class Furniture {
     /**
      * Constructor
      *
-     * @param _IDs
-     * @param _price
-     * @param set
+     * @param _IDs ID numbers of pieces
+     * @param _price price of piece
+     * @param set number of items
      */
     public Furniture(ArrayList<String> _IDs, int _price, int set) {
         this.IDs = _IDs;
@@ -40,7 +40,7 @@ public class Furniture {
     /**
      * Getter for IDS
      *
-     * @return
+     * @return IDs
      */
     public ArrayList<String> getIDs() {
         return this.IDs;
@@ -49,7 +49,7 @@ public class Furniture {
     /**
      * Getter for price
      *
-     * @return
+     * @return price
      */
     public int getPrice() {
         return this.totalPrice;
