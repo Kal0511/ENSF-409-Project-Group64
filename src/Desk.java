@@ -74,10 +74,6 @@ public class Desk extends Furniture{
             list.remove(0);
             cheapest = cheapestGroupRecursion(new ArrayList<>(list), curr, cheapest, requestSize);
         }
-//		if (cheapest == null) {
-//			return null;
-//		}
-        //return new Furniture(cheapest.IDs,cheapest.totalPrice,cheapest.completeSet);
         return cheapest;
     }
 
