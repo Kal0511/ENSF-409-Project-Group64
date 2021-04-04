@@ -11,7 +11,7 @@ public class SCM {
      * This initializes the Inventory class and calls all required methods to implement useful functionality.
      *
      * @param args Optional command-line argument
-     * @throws SQLException
+     * @throws SQLException For handling exceptions regarding MySQL
      */
     public static void main(String[] args) throws SQLException {
         Inventory test = new Inventory();
