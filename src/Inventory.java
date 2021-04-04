@@ -1,6 +1,8 @@
 import java.sql.*;
 import java.io.*;
+import java.time.format.DateTimeFormatter;
 import java.util.*;
+import java.time.*;
 
 /**
  * Inventory is a class that uses the SQL inventory database to process the the
@@ -11,7 +13,7 @@ import java.util.*;
  * @author Khaled Amer
  * @author Kaumil Patel
  * @author Dillon Matthews
- * @version 2.1
+ * @version 2.2
  * @since 1.0
  */
 public class Inventory {
@@ -42,7 +44,7 @@ public class Inventory {
     /**
      * Getter for category
      *
-     * @return
+     * @return category
      */
     public String getCategory() {
         return category;
@@ -51,7 +53,7 @@ public class Inventory {
     /**
      * Getter for type
      *
-     * @return
+     * @return type
      */
     public String getType() {
         return type;
@@ -60,14 +62,28 @@ public class Inventory {
     /**
      * Getter for amount
      *
-     * @return
+     * @return amount
      */
     public int getAmount() {
         return amount;
     }
 
+    /**
+     * Getter for item
+     *
+     * @return item
+     */
     public Furniture getItem() {
         return item;
+    }
+
+    /**
+     * Getter for results
+     *
+     * @return results
+     */
+    public ResultSet getResults() {
+        return results;
     }
 
     /**
@@ -89,7 +105,7 @@ public class Inventory {
     /**
      * Returns DBURL of desired MySQL database.
      *
-     * @return
+     * @return DBURL
      */
     public String getDburl() {
         return "jdbc:mysql://localhost/INVENTORY";
@@ -99,7 +115,7 @@ public class Inventory {
      * Returns the name of the MySQL user which the desired MySQL database belongs
      * to.
      *
-     * @return
+     * @return user
      */
     public String getUsername() {
         return "adam";
@@ -108,7 +124,7 @@ public class Inventory {
     /**
      * Returns the password to the respective mySQL User.
      *
-     * @return
+     * @return password
      */
     public String getPassword() {
         return "ensf409";
@@ -130,7 +146,7 @@ public class Inventory {
     /**
      * parses user entry into category, type, and amount.
      *
-     * @param entry
+     * @param entry User input
      */
     public void analyzeEntry(String entry) {
         try {
@@ -138,13 +154,13 @@ public class Inventory {
             this.type = entry.split(" ")[0];
             this.category = entry.split(" ")[1].split(",")[0];
             this.amount = Integer.parseInt(entry.split(" ")[2]);
-            if (!category.equals("chair") && !category.equals("desk") && !category.equals("lamp")
-                    && !category.equals("filing")) {
+            if (!(category.equals("chair") || category.equals("desk") || category.equals("lamp")
+                    || category.equals("filing"))) {
                 System.out.println("Unknown item.");
                 System.exit(1);
             }
         } catch (Exception e) {
-            System.out.println("Invalid item.");
+            System.out.println("Invalid input.");
             System.exit(1);
         }
     }
@@ -170,7 +186,7 @@ public class Inventory {
      * replaces the contents of that string with the actual names of the respective
      * manufacturers in the same order.
      *
-     * @throws SQLException
+     * @throws SQLException For handling exceptions regarding MySQL
      */
     public void findManuID(String[] x) throws SQLException {
         String query;
@@ -197,7 +213,7 @@ public class Inventory {
      * properties of each piece of furniture to their own String array which are
      * added to a more in depth list of pieces
      *
-     * @throws SQLException
+     * @throws SQLException For handling exceptions regarding MySQL
      */
     public void evaluateRequest() throws SQLException {
         switch (category) {
@@ -258,8 +274,8 @@ public class Inventory {
      * strToInt() method simply returns an int, either 1 or 0 to indicate a 'Y' or
      * 'N' of components in the mysql database to increase readability of code
      *
-     * @param check
-     * @return
+     * @param check Either 'Y' or 'N'
+     * @return Either 1 for 'Y' or 0 for 'N'
      */
     public int strToInt(String check) {
         if (check.equals("Y")) {
@@ -330,7 +346,9 @@ public class Inventory {
      * Writes the order details to a file called orderForm.txt.
      */
     public void write() {
-        System.out.print("Output: Purchase ");
+        System.out.print("Purchase ");
+        DateTimeFormatter dtf = DateTimeFormatter.ofPattern("yyyy/MM/dd");
+        LocalDateTime now = LocalDateTime.now();
         for (int i = 0; i < item.IDs.size(); i++) {
             System.out.print(item.IDs.get(i));
             if (i != item.IDs.size() - 1)
@@ -343,9 +361,9 @@ public class Inventory {
             fo.write("Furniture Order Form \n \n");
             fo.write("Faculty Name:\n");
             fo.write("Contact:\n");
-            fo.write("Date:\n");
+            fo.write("Date: " + dtf.format(now) + "\n");
             fo.write("\nOriginal Request: " + entry + "\n");
-            fo.write("\nItmes Ordered:\n");
+            fo.write("\nItems Ordered:\n");
             for (String item : item.IDs)
                 fo.write("ID: " + item + "\n");
             fo.write("\nTotal Price: $" + item.getPrice());
@@ -373,11 +391,41 @@ public class Inventory {
             myStmt.setString(8, manuID);
             myStmt.executeUpdate();
             myStmt.close();
-            if (myStmt != null) {
-                myStmt.close();
-            }
         } catch (SQLException ex) {
             ex.printStackTrace();
         }
+    }
+
+    public void removeChair(String id) {
+        String query;
+        PreparedStatement myStmt;
+        try {
+            query = "DELETE FROM Chair WHERE ID = ?";
+            myStmt = dbConnect.prepareStatement(query);
+            myStmt.setString(1, id);
+            myStmt.executeUpdate();
+            myStmt.close();
+        } catch (SQLException ex) {
+            ex.printStackTrace();
+        }
+    }
+
+    public boolean itemExists(String id, String category) {
+        String query;
+        PreparedStatement myStmt;
+        ResultSet resultSet;
+        try {
+            query = "SELECT * FROM $tableName WHERE ID = ?";
+            query = query.replace("$tableName", category);
+            myStmt = dbConnect.prepareStatement(query);
+            myStmt.setString(1, id);
+            resultSet = myStmt.executeQuery();
+            if (resultSet.next())
+                return true;
+            myStmt.close();
+        } catch (SQLException ex) {
+            ex.printStackTrace();
+        }
+        return false;
     }
 }
