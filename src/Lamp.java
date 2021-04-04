@@ -20,9 +20,9 @@ public class Lamp extends Furniture{
      * Constructor.
      *
      * @param _ID ID of piece
-     * @param _base Whether piece has base or not
-     * @param _bulb Whether piece has base or not
-     * @param _price Whether piece has base or not
+     * @param _base number of base
+     * @param _bulb number of bulb
+     * @param _price price of lamp item
      */
     public Lamp(String _ID, int _base, int _bulb, int _price) {
         super(_ID, _price, Math.min(_base, _bulb));
@@ -53,7 +53,7 @@ public class Lamp extends Furniture{
      *
      * @param list List of pieces needed to make lamp item
      * @param requestSize User-requested amount of item
-     * @return Cheapest lamp item
+     * @return Cheapest lamp object
      */
     public static Lamp processRequest(ArrayList<Lamp> list, int requestSize) {
         if (requestSize == 0) {
