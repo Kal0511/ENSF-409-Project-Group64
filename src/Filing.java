@@ -28,7 +28,7 @@ public class Filing extends Furniture{
      * @param _rails number of rails
      * @param _cabinet number of cabinets
      * @param _drawer number of drawers
-     * @param _price number of filing item
+     * @param _price price of filing item
      */
     public Filing(String _ID, int _rails, int _cabinet, int _drawer, int _price) {
         super(_ID, _price, Math.min(_cabinet, Math.min(_rails, _drawer)));
@@ -115,4 +115,3 @@ public class Filing extends Furniture{
         return best;
     }
 }
-
