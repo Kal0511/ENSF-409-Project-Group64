@@ -227,7 +227,6 @@ public class Inventory {
                 }
                 findManuID(possibleManufacturersChair);
                 item = Chair.processRequest(list, amount);
-
                 break;
             }
             case "desk": {
@@ -252,7 +251,6 @@ public class Inventory {
                 }
                 findManuID(possibleManufacturersFiling);
                 item = Filing.processRequest(list, amount);
-
                 break;
             }
             case "lamp": {
